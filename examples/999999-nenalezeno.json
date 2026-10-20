@@ -1,0 +1,30 @@
+{
+  "request": "Zjisti stav objednávky 999999 a navrhni další postup.",
+  "final_status": "FAILED",
+  "root_cause_summary": "Objednávka 999999 ve Shopify neexistuje (HTTP 404).",
+  "proposed_next_steps": [
+    "Ověřit číslo s zákazníkem.",
+    "Odoo ani WMS kvůli tomu nevolat."
+  ],
+  "summary_for_operator": "999999 není na fabini.cz ani fabini.sk.",
+  "sop_reference": "SOP-CC-03: Ověření čísla objednávky",
+  "customer_care_suggestion": "Dobrý den, objednávku s tímto číslem jsme nenašli. Pošlete nám prosím potvrzení z e-mailu a my ji dohledáme.",
+  "audit_trail": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-14T08:00:00+00:00",
+      "thought": "Nejdřív Shopify hlavičku 999999.",
+      "tool_called": "get_order",
+      "tool_args": {
+        "order_id": "999999"
+      },
+      "tool_output": {
+        "status": "ERROR",
+        "code": 404,
+        "message": "Objednávka 999999 neexistuje."
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    }
+  ]
+}

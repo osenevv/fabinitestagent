@@ -1,0 +1,124 @@
+{
+  "request": "Zákazník urguje objednávku 100500. Zjisti stav expedice a vyřeš případný problém.",
+  "final_status": "ESCALATED",
+  "root_cause_summary": "Objednávka 100500 je zaplacená a sync je SUCCESS, jenže čtení WMS spadlo na ConnectionTimeoutError. Založil jsem INC-2026-0891.",
+  "proposed_next_steps": [
+    "L2 obnoví čtení WMS.",
+    "Po obnově znovu načíst expedici 100500.",
+    "Zákazníkovi neposílat sledování, dokud sklad nepotvrdí zásilku."
+  ],
+  "summary_for_operator": "INC-2026-0891 je na L2. Zákaznická péče slíbí jen to, že se ozveme.",
+  "sop_reference": "SOP-IT-09: Odoo/WMS 503 L2 Escalation",
+  "customer_care_suggestion": "Dobrý den, vaši objednávku právě prověřujeme a ozveme se, jakmile budeme vědět víc.",
+  "audit_trail": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-14T08:00:00+00:00",
+      "thought": "Nejdřív Shopify hlavičku 100500.",
+      "tool_called": "get_order",
+      "tool_args": {
+        "order_id": "100500"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100500",
+          "shopify_order_gid": "gid://shopify/Order/589100500",
+          "store": "fabini.cz",
+          "customer": "Martin Dvořák",
+          "status": "PROCESSING",
+          "created_at": "2026-10-14T07:00:00Z",
+          "items": [
+            {
+              "sku": "FAB-SET-HRNCE",
+              "title": "Sada hrnců FABINI",
+              "quantity": 1
+            }
+          ],
+          "tags": [
+            "FABINI_GARANCE"
+          ]
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 2,
+      "timestamp": "2026-10-14T08:00:01+00:00",
+      "thought": "Ověřím platbu, než budu řešit sklad.",
+      "tool_called": "get_payment",
+      "tool_args": {
+        "order_id": "100500"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100500",
+          "status": "PAID",
+          "method": "APPLE_PAY",
+          "amount_czk": 6990
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 3,
+      "timestamp": "2026-10-14T08:00:02+00:00",
+      "thought": "Podívám se na poslední n8n běh Shopify → Odoo.",
+      "tool_called": "get_sync_logs",
+      "tool_args": {
+        "order_id": "100500"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100500",
+          "last_attempt": "2026-10-14T07:00:04Z",
+          "status": "SUCCESS",
+          "channel": "n8n",
+          "flow": "shopify-order-paid-to-odoo",
+          "error_code": null,
+          "message": "Odoo objednávku přijalo. Čtení WMS je jiná cesta a teď neodpovídá."
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 4,
+      "timestamp": "2026-10-14T08:00:03+00:00",
+      "thought": "Zjistím, jestli WMS objednávku vidí.",
+      "tool_called": "get_fulfillment",
+      "tool_args": {
+        "order_id": "100500"
+      },
+      "tool_output": {
+        "status": "ERROR",
+        "error_type": "ConnectionTimeoutError",
+        "retryable": false,
+        "details": "WMS_API_UNAVAILABLE: HTTP 503 Service Unavailable (pokus 2/2, order 100500). Connection pool exhausted."
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": "WMS_API_UNAVAILABLE: HTTP 503 Service Unavailable (pokus 2/2, order 100500). Connection pool exhausted."
+    },
+    {
+      "step_number": 5,
+      "timestamp": "2026-10-14T08:00:04+00:00",
+      "thought": "WMS spadlo i po vlastním retry. Zakládám incident.",
+      "tool_called": "create_ticket",
+      "tool_args": {
+        "description": "Výpadek WMS při kontrole objednávky 100500. ConnectionTimeoutError: WMS_API_UNAVAILABLE: HTTP 503 Service Unavailable (pokus 2/2, order 100500). Connection pool exhausted."
+      },
+      "tool_output": {
+        "status": "OK",
+        "ticket_id": "INC-2026-0891",
+        "message": "Incident je založený a přiřazený L2 Operations.",
+        "description": "Výpadek WMS při kontrole objednávky 100500. ConnectionTimeoutError: WMS_API_UNAVAILABLE: HTTP 503 Service Unavailable (pokus 2/2, order 100500). Connection pool exhausted."
+      },
+      "approval_status": "HUMAN_APPROVED",
+      "error": null
+    }
+  ]
+}

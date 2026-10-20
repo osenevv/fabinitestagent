@@ -1,0 +1,110 @@
+{
+  "request": "Zjisti, proč objednávka 100246 nebyla expedována, a navrhni další postup.",
+  "final_status": "PROPOSED_ACTION",
+  "root_cause_summary": "Objednávka 100246 ve skladu není (NOT_FOUND), protože platba je UNPAID_AWAITING_BANK_TRANSFER. Sync je SUCCESS.",
+  "proposed_next_steps": [
+    "retry_sync nevolat. Nezaplacená objednávka do Odoo skladu nepatří.",
+    "Počkat na připsání převodu. Expedice až po PAID.",
+    "Když převod nepřijde do tří pracovních dnů, připomenout platební údaje."
+  ],
+  "summary_for_operator": "100246 na fabini.sk čeká na převod. Není to chyba n8n.",
+  "sop_reference": "SOP-FIN-02: Bank Transfer SLA 3 Days",
+  "customer_care_suggestion": "Dobrý den, objednávka 100246 čeká na připsání platby převodem. Jakmile peníze dorazí, předáme ji do skladu. Převod obvykle vidíme do tří pracovních dnů.",
+  "audit_trail": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-14T08:00:00+00:00",
+      "thought": "Nejdřív Shopify hlavičku 100246.",
+      "tool_called": "get_order",
+      "tool_args": {
+        "order_id": "100246"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100246",
+          "shopify_order_gid": "gid://shopify/Order/589100246",
+          "store": "fabini.sk",
+          "customer": "Petra Svobodová",
+          "status": "AWAITING_PAYMENT",
+          "created_at": "2026-10-13T14:10:00Z",
+          "items": [
+            {
+              "sku": "FAB-PAN-NEREZ-28",
+              "title": "Nerezová pánev 28 cm",
+              "quantity": 1
+            }
+          ],
+          "tags": [
+            "FABINI_GARANCE"
+          ]
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 2,
+      "timestamp": "2026-10-14T08:00:01+00:00",
+      "thought": "Ověřím platbu, než budu řešit sklad.",
+      "tool_called": "get_payment",
+      "tool_args": {
+        "order_id": "100246"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100246",
+          "status": "UNPAID_AWAITING_BANK_TRANSFER",
+          "method": "BANK_TRANSFER",
+          "amount_czk": 2190
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 3,
+      "timestamp": "2026-10-14T08:00:02+00:00",
+      "thought": "Podívám se na poslední n8n běh Shopify → Odoo.",
+      "tool_called": "get_sync_logs",
+      "tool_args": {
+        "order_id": "100246"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100246",
+          "last_attempt": "2026-10-13T14:10:02Z",
+          "status": "SUCCESS",
+          "channel": "n8n",
+          "flow": "shopify-order-paid-to-odoo",
+          "error_code": null,
+          "message": "Shopify objednávka je v Odoo. Expedice čeká na platbu převodem."
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 4,
+      "timestamp": "2026-10-14T08:00:03+00:00",
+      "thought": "Zjistím, jestli WMS objednávku vidí.",
+      "tool_called": "get_fulfillment",
+      "tool_args": {
+        "order_id": "100246"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100246",
+          "status": "NOT_FOUND",
+          "fulfillment_id": null,
+          "tracking_number": null
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    }
+  ]
+}

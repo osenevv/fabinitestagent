@@ -1,0 +1,110 @@
+{
+  "request": "Zjisti, proč objednávka 100245 nebyla expedována, a pokud je problém v synchronizaci, navrhni další postup.",
+  "final_status": "PROPOSED_ACTION",
+  "root_cause_summary": "Objednávka 100245 je PAID a ve stavu PROCESSING, ve skladu ale není (NOT_FOUND). n8n flow Shopify → Odoo skončil ODOO_ERP_SYNC_TIMEOUT_504.",
+  "proposed_next_steps": [
+    "Po schválení zavolat retry_sync(\"100245\").",
+    "Ověřit, že vznikl záznam expedice FUL-998.",
+    "Zákazníkovi napsat až po potvrzení ze skladu."
+  ],
+  "summary_for_operator": "Shopify 100245 je PAID, Odoo expedici nemá. Příčina je ODOO_ERP_SYNC_TIMEOUT_504.",
+  "sop_reference": "SOP-OPS-01: Shopify->Odoo Sync Retry",
+  "customer_care_suggestion": "Dobrý den, litinový pekáč s poklicí 26 cm z objednávky 100245 ještě předáváme do skladu. Jakmile zásilka odejde, pošleme vám sledování.",
+  "audit_trail": [
+    {
+      "step_number": 1,
+      "timestamp": "2026-10-14T08:00:00+00:00",
+      "thought": "Nejdřív Shopify hlavičku 100245.",
+      "tool_called": "get_order",
+      "tool_args": {
+        "order_id": "100245"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100245",
+          "shopify_order_gid": "gid://shopify/Order/589100245",
+          "store": "fabini.cz",
+          "customer": "Jan Novák",
+          "status": "PROCESSING",
+          "created_at": "2026-10-12T08:30:00Z",
+          "items": [
+            {
+              "sku": "FAB-LIT-PEK-26",
+              "title": "Litinový pekáč s poklicí 26 cm",
+              "quantity": 1
+            }
+          ],
+          "tags": [
+            "FABINI_GARANCE"
+          ]
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 2,
+      "timestamp": "2026-10-14T08:00:01+00:00",
+      "thought": "Ověřím platbu, než budu řešit sklad.",
+      "tool_called": "get_payment",
+      "tool_args": {
+        "order_id": "100245"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100245",
+          "status": "PAID",
+          "method": "CARD",
+          "amount_czk": 3490
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 3,
+      "timestamp": "2026-10-14T08:00:02+00:00",
+      "thought": "Podívám se na poslední n8n běh Shopify → Odoo.",
+      "tool_called": "get_sync_logs",
+      "tool_args": {
+        "order_id": "100245"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100245",
+          "last_attempt": "2026-10-12T08:30:05Z",
+          "status": "FAILED",
+          "channel": "n8n",
+          "flow": "shopify-order-paid-to-odoo",
+          "error_code": "ODOO_ERP_SYNC_TIMEOUT_504",
+          "message": "n8n webhook shopify-order-paid-to-odoo vytimeoutoval při zápisu objednávky 100245 do Odoo ERP."
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    },
+    {
+      "step_number": 4,
+      "timestamp": "2026-10-14T08:00:03+00:00",
+      "thought": "Zjistím, jestli WMS objednávku vidí.",
+      "tool_called": "get_fulfillment",
+      "tool_args": {
+        "order_id": "100245"
+      },
+      "tool_output": {
+        "status": "OK",
+        "data": {
+          "order_id": "100245",
+          "status": "NOT_FOUND",
+          "fulfillment_id": null,
+          "tracking_number": null
+        }
+      },
+      "approval_status": "AUTO_APPROVED_READ_ONLY",
+      "error": null
+    }
+  ]
+}
