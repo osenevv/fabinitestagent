@@ -19,11 +19,11 @@ viagem-ai-konzultant/
     user_template.txt         # šablona user zprávy
   schema/
     vyhodnoceni.schema.json   # JSON Schema výstupu
-  data/parcels/               # 6 vstupních parcel
+  data/parcels/               # vstupní parcely
   tests/cases/<id>/
     input.json                # vstup
-    expected.json             # očekávané kontroly (ne soft label celého JSON)
-    actual.json               # skutečný výstup modelu (zaznamenaný)
+    expected.json             # prahové kontroly
+    actual.json               # zaznamenaný / referenční výstup
   notes/
     iterace.md
     reflexe.md
@@ -31,14 +31,37 @@ viagem-ai-konzultant/
 
 ## Architektura (proč tak)
 
-- **Jeden system prompt + user šablona** — data parcely se vloží jako JSON. Žádný multi-agent stack: u interview hodnotí kvalitu promptu a konzistenci.
-- **Stabilní JSON taxonomie** — `skore_zajmu`, `doporuceni`, rizika (`zaplava` / `ochrana_prirody` / `uzemni_plan`), `jistota`, `overit_rucne`, `konflikty_dat`, `chybejici_data`.
-- **Konzervativní pravidla** pro hrany: chybějící data → `neznamo` + nízká jistota; konflikty → ne `vykupit`; aktivní zóna / NATURA → vysoké až kritické riziko.
+- **Jeden system prompt + user šablona** — žádný multi-agent; na pohovoru rozhoduje kvalita promptu.
+- **Stabilní JSON** — skóre, doporučení, rizika (záplavy / ochrana / ÚP), využitelnost, jistota, `overit_rucne`, konflikty, chybějící data.
+- **Tvrdé gate** — `kriticke` riziko, neprázdné konflikty nebo jistota &lt; 40 ⇒ zákaz `vykupit` (v promptu i ve validaci runneru).
+
+## Minimální vstup (čerstvá parcela)
+
+Stačí JSON; chybějící vrstvy model musí označit jako `neznamo`, ne vymýšlet:
+
+```json
+{
+  "id": "moje-parcela",
+  "ku": "…",
+  "cislo_parcely": "…",
+  "vymera_m2": 0,
+  "druh_pozemku": "…",
+  "kn_poznamky": "…",
+  "uzemni_plan": null,
+  "zaplavove_uzemi": null,
+  "ochrana_prirody": null,
+  "lpis": null,
+  "vizualni_kontext": null,
+  "dalsi": {}
+}
+```
+
+Vzory: `data/parcels/*.json`.
 
 ## Požadavky
 
-- Python 3.10+ (stdlib; `urllib` pro live API)
-- Volitelně: `pip install -r requirements.txt` (prázdné / minimální — žádný SDK není nutný)
+- Python 3.10+ (stdlib)
+- Volitelně `pip install -r requirements.txt` (žádný SDK nutný)
 
 ```bash
 cd viagem-ai-konzultant
@@ -46,57 +69,45 @@ python3 evaluate.py --run-all-tests
 python3 evaluate.py data/parcels/01-stavebni-happy.json
 ```
 
-Bez API klíče offline režim **vrátí uložený** `tests/cases/<id>/actual.json` pro známé parcely.
+**Bez `--live`:** skript vrátí uložený `tests/cases/<id>/actual.json` a na stderr napíše, že nejde o live model.
 
-## Live model (volitelné)
-
-Stejný vzor jako FABINI README — OpenAI-kompatibilní endpointy + Anthropic:
+## Live model
 
 ```bash
-export OPENAI_API_KEY=...          # default model gpt-4o-mini
-# nebo
-export XAI_API_KEY=...             # https://api.x.ai/v1, grok-3-mini
-# nebo
-export GEMINI_API_KEY=...          # generativelanguage.googleapis.com/v1beta/openai
-# nebo
-export ANTHROPIC_API_KEY=...       # claude-sonnet-4-5
+export OPENAI_API_KEY=...          # default gpt-4o-mini
+# nebo XAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
 
 python3 evaluate.py --live data/parcels/01-stavebni-happy.json --out /tmp/out.json
-```
-
-Volitelné override: `OPENAI_MODEL`, `OPENAI_BASE_URL`, `XAI_MODEL`, `GEMINI_MODEL`, `ANTHROPIC_MODEL`.
-
-Vytisknout sestavený prompt bez volání API:
-
-```bash
+python3 evaluate.py --live --save-actual data/parcels/07-q100-stavebni.json
 python3 evaluate.py --print-prompt data/parcels/04-chybici-data.json
 ```
 
-## Model, který produkoval `actual.json`
+Override: `OPENAI_MODEL`, `OPENAI_BASE_URL`, `XAI_MODEL`, `GEMINI_MODEL`, `ANTHROPIC_MODEL`.
 
-V prostředí cloud agenta **nebyly** nastavené API klíče. Soubory `tests/cases/*/actual.json` vznikly **ručním během finálního promptu** (stejný system + user template) modelem uvedeným v `_meta.model` (`composer-agent (ruční běh finálního promptu)`). Jsou to skutečné výstupy podle instrukcí promptu, ne prázdné placeholdery.
+## Provenance `actual.json`
 
-Pro živé přegenerování nastav klíč a spusť `--live` (ideálně přepiš `actual.json` a znovu `--run-all-tests`).
+V prostředí cloud agenta **nebyly** API klíče. Soubory `actual.json` jsou **referenční výstupy autora** sestavené podle finálního `prompts/system.txt` (ne nezávislý běh GPT/Claude). V `_meta` je to uvedené. Pro měření reálného modelu: `--live --save-actual` a znovu `--run-all-tests`.
 
-## Test cases (strategie)
+## Test cases
 
-| ID | Scénář | Co má prasknout / projít |
+| ID | Scénář | Očekávání |
 | --- | --- | --- |
-| `01-stavebni-happy` | Proluka BH, čistá rizika | Vysoké skóre, stavební potenciál |
+| `01-stavebni-happy` | Proluka BH, čistá rizika | `vykupit`, stavební |
 | `02-zaplava` | Aktivní zóna + nezastavitelný ÚP | `odmitnout`, kritické záplavy |
-| `03-natura-aopk` | EVL + CHKO | Odmítnout stavební výkup |
-| `04-chybici-data` | Jen KN | `neznamo`, nízká jistota, `chybejici_data` |
-| `05-konflikt-zdroju` | ÚP vs LPIS, rozporné záplavy | `konflikty_dat`, ne `vykupit` |
-| `06-zemedelsky` | Orná NZ, čistá data | `zemedelsky`, ne stavební halucinace |
+| `03-natura-aopk` | EVL + CHKO | odmítnout stavební výkup |
+| `04-chybici-data` | Jen KN | `neznamo`, nízká jistota |
+| `05-konflikt-zdroju` | ÚP vs LPIS, rozporné záplavy | konflikty, ne `vykupit` |
+| `06-zemedelsky` | Orná NZ | `zemedelsky` |
+| `07-q100-stavebni` | BI + Q100 mimo aktivní zónu | `zkoumat_dal`/`odlozit`, záplava ≥ vysoké |
 
-`expected.json` kontroluje **prahové vlastnosti** (doporučení, rozsah skóre, přítomnost konfliktů), ne byte-identický text — u LLM je to smysluplnější.
+`expected.json` = prahy (doporučení, rozsah skóre, konflikty), ne byte-identický text.
 
 ## Odevzdání
 
-- Finální prompt: `prompts/system.txt` (+ `user_template.txt`)
-- Obal: `evaluate.py`
-- Test cases: `tests/cases/`
-- Iterace: `notes/iterace.md`
-- Reflexe: `notes/reflexe.md`
+1. Prompt: `prompts/system.txt` (+ `user_template.txt`)
+2. Obal: `evaluate.py`
+3. Test cases: `tests/cases/`
+4. Iterace: `notes/iterace.md`
+5. Reflexe: `notes/reflexe.md`
 
-Žádné secrety do repa nedávej — jen env vars.
+Žádné secrety do repa — jen env vars.

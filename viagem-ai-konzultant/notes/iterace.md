@@ -1,32 +1,38 @@
 # Poznámky k iteracím promptu
 
-## Iterace 0 — záměr
-Cíl: jeden system prompt + JSON výstup pro rozhodnutí o výkupu (ne volný esej). Taxonomie: `skore_zajmu`, rizika (záplavy / ochrana / ÚP), využitelnost, jistota, `overit_rucne`.
+> **Upřímnost:** Iterace níže jsou **design-time** — odvozené při psaní promptu a test fixtures, ne ze zaznamenaných API logů. V prostředí nebyl API klíč; `actual.json` jsou referenční výstupy autora podle finálního promptu. Live přegenerování: `python evaluate.py --live --save-actual …`.
 
-## Iterace 1 — první draft
-Prompt popisoval „napiš hodnocení parcely“. Výstup byl nekonzistentní: jednou odrážky, jindy JSON s jinými klíči (`score` vs `skore`).  
+## Iterace 0 — záměr
+Jeden system prompt + JSON pro výkup (ne esej). Taxonomie: `skore_zajmu`, rizika, využitelnost, jistota, `overit_rucne`.
+
+## Iterace 1 — stabilní tvar
+Volný text by kolísal (`score` vs `skore`, odrážky vs JSON).  
 **Změna:** pevné schéma + „odpověz VÝHRADNĚ JSON“.
 
-## Iterace 2 — chybějící data
-Na case `04-chybici-data` model doplňoval ÚP a záplavy „z obecné znalosti“.  
-**Změna:** tvrdé pravidlo „pracuj POUZE se vstupem“; chybějící → `chybejici_data` + `uroven: neznamo` + snížená jistota.
+## Iterace 2 — anti-halucinace
+Při neúplném vstupu (case 04) hrozí doplňování ÚP/záplav z „obecné znalosti“.  
+**Změna:** „pracuj POUZE se vstupem“; chybějící → `chybejici_data` + `neznamo` + nižší jistota.
 
 ## Iterace 3 — konflikty
-Na case `05-konflikt-zdroju` model průměroval ÚP BI a LPIS ornou do „spíš bydlení“ a dával `vykupit`.  
-**Změna:** povinné `konflikty_dat`; při konfliktu zákaz `vykupit`; `hlavni_potencial: nejisty`.
+Při ÚP BI vs LPIS orná (case 05) hrozí průměrování do `vykupit`.  
+**Změna:** povinné `konflikty_dat`; zákaz `vykupit` při konfliktu; `hlavni_potencial: nejisty`.
 
 ## Iterace 4 — záplavy a NATURA
-`02-zaplava` někdy dostalo jen „střední riziko“ i při aktivní zóně. `03-natura` skórovalo zemědělský TTP příliš vysoko.  
-**Změna:** speciální pravidla — aktivní zóna → `vysoke`/`kriticke`; EVL/CHKO pro stavební výkup → `kriticke`; zemědělství posuzovat zvlášť, ale limity ochrany držet skóre nízko.
+Aktivní zóna nesmí skončit jako „střední“. NATURA/CHKO nesmí dostat vysoké skóre jako stavební kandidát.  
+**Změna:** speciální pravidla + později **tvrdé gate** (`kriticke` ⇒ ne `vykupit`).
 
 ## Iterace 5 — doporučení vs jistota
-Happy path občas `zkoumat_dal` i při čistých datech, nebo naopak `vykupit` při jistotě 30.  
-**Změna:** orientační prahy v promptu + preferovat konzervativní doporučení při nízké jistotě; `overit_rucne` vždy konkrétní body.
+`vykupit` při nízké jistotě je nebezpečné.  
+**Změna:** orientační prahy + gate `jistota < 40` ⇒ ne `vykupit`; konkrétní `overit_rucne`.
 
-## Iterace 6 — finální balíček
-Zafixováno schéma v `schema/vyhodnoceni.schema.json`, system prompt v `prompts/system.txt`, user šablona, runner a 6 test cases s `actual.json` z ručního běhu finálního promptu (bez API klíče v prostředí).
+## Iterace 6 — balíček v1
+Schéma, runner, 6 cases, README.
 
-## Co by byla další iterace (neuděláno)
-- Few-shot příklad uvnitř promptu (1× dobrý JSON) pro stabilitu menších modelů
-- Striktní JSON Schema validace přes `jsonschema` při live běhu
-- Kalibrace skóre na interních historických výkupech Viagem
+## Iterace 7 — po design breakdown (tato revize)
+Nalezené díry: chybějící tvrdé gate, Q100 ≠ aktivní zóna, volné expected, neupřímné actual/`_meta`, offline bez varování, `konflikty_dat`/`chybejici_data` nepovinné ve schématu.  
+**Změna:** tvrdé gate v promptu i runneru; case `07-q100-stavebni`; utažení expected; `--save-actual`; offline stderr; povinná pole ve schématu; upřímný wording provenance.
+
+## Další (neuděláno)
+- 1× few-shot JSON v promptu pro menší modely
+- Native structured output u poskytovatele
+- Kalibrace skóre na reálných výkupech Viagem

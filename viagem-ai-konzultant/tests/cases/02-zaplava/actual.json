@@ -52,8 +52,8 @@
     "stav inženýrských sítí"
   ],
   "_meta": {
-    "model": "composer-agent (ruční běh finálního promptu)",
+    "model": "referenční výstup autora dle finálního promptu (bez API)",
     "live": false,
-    "poznamka": "Zaznamenáno bez API klíče."
+    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
   }
 }

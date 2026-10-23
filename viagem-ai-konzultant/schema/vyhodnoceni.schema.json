@@ -13,9 +13,16 @@
     "rizika",
     "jistota",
     "overit_rucne",
-    "duvodovani"
+    "duvodovani",
+    "konflikty_dat",
+    "chybejici_data"
   ],
   "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Volitelná metadata runneru / provenance; není součástí modelového kontraktu",
+      "additionalProperties": true
+    },
     "parcelni_identifikace": {
       "type": "object",
       "additionalProperties": false,

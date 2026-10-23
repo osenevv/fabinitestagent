@@ -1,0 +1,13 @@
+{
+  "popis": "BI bydlení + Q100 mimo aktivní zónu — vysoké riziko záplav, ne automatické odmitnout.",
+  "vstup": "../../data/parcels/07-q100-stavebni.json",
+  "kontroly": {
+    "doporuceni": ["zkoumat_dal", "odlozit"],
+    "skore_zajmu_min": 25,
+    "skore_zajmu_max": 65,
+    "hlavni_potencial": ["stavebni", "nejisty"],
+    "zaplava_min": "vysoke",
+    "nesmi_doporuceni": ["vykupit"]
+  },
+  "poznamka": "Má odlišit Q100 od aktivní zóny (case 02)."
+}

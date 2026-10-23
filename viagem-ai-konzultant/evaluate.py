@@ -37,9 +37,12 @@ REQUIRED_TOP = [
     "jistota",
     "overit_rucne",
     "duvodovani",
+    "konflikty_dat",
+    "chybejici_data",
 ]
 DOPORUCENI = {"vykupit", "zkoumat_dal", "odlozit", "odmitnout"}
 UROVEN = {"zadne", "nizke", "stredni", "vysoke", "kriticke", "neznamo"}
+CORE_RISKS = ("zaplava", "ochrana_prirody", "uzemni_plan")
 
 
 def load_text(path: Path) -> str:
@@ -57,33 +60,60 @@ def build_messages(parcel: dict[str, Any]) -> list[dict[str, str]]:
 
 
 def validate_vyhodnoceni(data: Any) -> list[str]:
-    """Lehká validace bez externí závislosti (jsonschema není povinné)."""
+    """Lehká validace bez externí závislosti (jsonschema není povinné).
+
+    Kontroluje povinná pole ze schema/vyhodnoceni.schema.json a tvrdé gate z promptu.
+    Pole `_meta` je povoleno (provenance runneru).
+    """
     errs: list[str] = []
     if not isinstance(data, dict):
         return ["výstup není JSON objekt"]
     for key in REQUIRED_TOP:
         if key not in data:
             errs.append(f"chybí pole: {key}")
-    if "skore_zajmu" in data and not (
-        isinstance(data["skore_zajmu"], int) and 0 <= data["skore_zajmu"] <= 100
-    ):
-        errs.append("skore_zajmu musí být int 0–100")
+    if "skore_zajmu" in data:
+        skore = data["skore_zajmu"]
+        if isinstance(skore, bool) or not isinstance(skore, int) or not 0 <= skore <= 100:
+            errs.append("skore_zajmu musí být int 0–100")
     if "doporuceni" in data and data["doporuceni"] not in DOPORUCENI:
         errs.append(f"neplatné doporuceni: {data.get('doporuceni')}")
     jistota = data.get("jistota")
+    jistota_skore = None
     if isinstance(jistota, dict):
-        sk = jistota.get("skore")
-        if not (isinstance(sk, int) and 0 <= sk <= 100):
+        jistota_skore = jistota.get("skore")
+        if isinstance(jistota_skore, bool) or not isinstance(jistota_skore, int) or not 0 <= jistota_skore <= 100:
             errs.append("jistota.skore musí být int 0–100")
     rizika = data.get("rizika")
+    kriticke = False
     if isinstance(rizika, dict):
-        for name in ("zaplava", "ochrana_prirody", "uzemni_plan"):
+        for name in CORE_RISKS:
             r = rizika.get(name)
-            if isinstance(r, dict) and r.get("uroven") not in UROVEN:
+            if not isinstance(r, dict):
+                errs.append(f"rizika.{name} chybí nebo není objekt")
+                continue
+            if r.get("uroven") not in UROVEN:
                 errs.append(f"rizika.{name}.uroven neplatná")
+            if r.get("uroven") == "kriticke":
+                kriticke = True
+            if "duvod" not in r:
+                errs.append(f"rizika.{name}.duvod chybí")
+        if "dalsi" in rizika and not isinstance(rizika["dalsi"], list):
+            errs.append("rizika.dalsi musí být pole")
     overit = data.get("overit_rucne")
     if overit is not None and (not isinstance(overit, list) or len(overit) < 1):
         errs.append("overit_rucne musí být neprázdné pole")
+    for arr_name in ("konflikty_dat", "chybejici_data"):
+        if arr_name in data and not isinstance(data[arr_name], list):
+            errs.append(f"{arr_name} musí být pole")
+    # Tvrdé gate z promptu (zachycení chyb live modelu)
+    dop = data.get("doporuceni")
+    if dop == "vykupit":
+        if kriticke:
+            errs.append("gate: kriticke riziko nesmí mít doporuceni=vykupit")
+        if isinstance(data.get("konflikty_dat"), list) and data["konflikty_dat"]:
+            errs.append("gate: neprázdné konflikty_dat nesmí mít doporuceni=vykupit")
+        if isinstance(jistota_skore, int) and jistota_skore < 40:
+            errs.append("gate: jistota<40 nesmí mít doporuceni=vykupit")
     return errs
 
 
@@ -240,12 +270,30 @@ def evaluate_offline(parcel_path: Path) -> dict[str, Any]:
     recorded = find_recorded_actual(parcel_path)
     if recorded is None:
         raise SystemExit(
-            "Offline režim: nenalezen tests/cases/<id>/actual.json. "
-            "Spusť s --live a API klíčem, nebo použij existující test case."
+            "Offline režim: nenalezen tests/cases/<id>/actual.json.\n"
+            "Pro novou parcelu spusť s --live a API klíčem "
+            "(volitelně --save-actual), nebo přidej test case ručně."
         )
-    data = json.loads(recorded.read_text(encoding="utf-8"))
-    # _meta může být v actual
-    return data
+    print(
+        f"Poznámka: offline režim vrací zaznamenaný výstup ({recorded}), ne live model. "
+        "Pro API použij --live.",
+        file=sys.stderr,
+    )
+    return json.loads(recorded.read_text(encoding="utf-8"))
+
+
+def save_actual_for_parcel(parcel: dict[str, Any], result: dict[str, Any]) -> Path:
+    case_id = parcel.get("id")
+    if not case_id:
+        raise SystemExit("--save-actual vyžaduje pole 'id' v parcel JSON")
+    case_dir = CASES_DIR / str(case_id)
+    case_dir.mkdir(parents=True, exist_ok=True)
+    out = case_dir / "actual.json"
+    out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    inp = case_dir / "input.json"
+    if not inp.exists():
+        inp.write_text(json.dumps(parcel, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return out
 
 
 def run_all_tests() -> int:
@@ -271,6 +319,8 @@ def run_all_tests() -> int:
             errs.append(
                 f"doporuceni={actual.get('doporuceni')} mimo očekávané {checks['doporuceni']}"
             )
+        if "nesmi_doporuceni" in checks and actual.get("doporuceni") in checks["nesmi_doporuceni"]:
+            errs.append(f"doporuceni={actual.get('doporuceni')} je zakázané")
         if "skore_zajmu_min" in checks:
             if actual.get("skore_zajmu", -1) < checks["skore_zajmu_min"]:
                 errs.append("skore_zajmu pod minimem")
@@ -319,6 +369,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("parcel", nargs="?", help="Cesta k JSON parcely")
     parser.add_argument("--live", action="store_true", help="Zavolat LLM přes API")
     parser.add_argument("--out", type=Path, help="Uložit výstup do souboru")
+    parser.add_argument(
+        "--save-actual",
+        action="store_true",
+        help="Po --live uložit výstup do tests/cases/<id>/actual.json",
+    )
     parser.add_argument("--run-all-tests", action="store_true", help="Offline kontrola test cases")
     parser.add_argument("--print-prompt", action="store_true", help="Vytisknout sestavený prompt a skončit")
     args = parser.parse_args(argv)
@@ -328,6 +383,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.parcel:
         parser.error("Zadej cestu k parcel JSON, nebo --run-all-tests")
+
+    if args.save_actual and not args.live:
+        parser.error("--save-actual vyžaduje --live")
 
     parcel_path = Path(args.parcel)
     if not parcel_path.is_file():
@@ -344,6 +402,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.live:
         result = evaluate_live(parcel)
+        if args.save_actual:
+            saved = save_actual_for_parcel(parcel, result)
+            print(f"Uloženo actual: {saved}", file=sys.stderr)
     else:
         result = evaluate_offline(parcel_path)
 

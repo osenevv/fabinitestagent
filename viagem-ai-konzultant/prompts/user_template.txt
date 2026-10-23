@@ -1,4 +1,5 @@
-Vyhodnoť následující parcelu pro rozhodnutí o výkupu. Vrať pouze JSON dle systémových instrukcí.
+Vyhodnoť následující parcelu pro rozhodnutí o výkupu.
+Vrať pouze JSON dle systémových instrukcí. Chybějící vrstvy nevymýšlej.
 
 ```json
 {{PARCEL_JSON}}

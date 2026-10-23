@@ -2,11 +2,12 @@
   "popis": "Happy path: proluka BH v Brně, mimo záplavy i ochranu, sítě v ulici.",
   "vstup": "../../data/parcels/01-stavebni-happy.json",
   "kontroly": {
-    "doporuceni": ["vykupit", "zkoumat_dal"],
-    "skore_zajmu_min": 65,
+    "doporuceni": ["vykupit"],
+    "skore_zajmu_min": 70,
     "skore_zajmu_max": 95,
     "hlavni_potencial": ["stavebni"],
-    "zaplava_min": "zadne"
+    "zaplava_min": "zadne",
+    "nesmi_doporuceni": ["odmitnout", "odlozit"]
   },
-  "poznamka": "Očekáváme vysoký zájem; drobná nejistota (zbořeniště, regulativy) může držet doporučení na zkoumat_dal."
+  "poznamka": "Čistá stavební proluka — očekáváme vykupit, ne opatrné odklady."
 }
