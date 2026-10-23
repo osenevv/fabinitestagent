@@ -1,0 +1,67 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Židlochovice",
+    "cislo_parcely": "334",
+    "vymera_m2": 18500,
+    "druh_pozemku": "orná půda"
+  },
+  "shrnuti": "Kompaktní orný blok ~1,85 ha v ploše NZ, mimo záplavy i ochranu — vhodný ke zvážení zemědělského výkupu, nikoli stavebního.",
+  "skore_zajmu": 62,
+  "doporuceni": "zkoumat_dal",
+  "vyuzitelnost": {
+    "hlavni_potencial": "zemedelsky",
+    "up_zamer": "plocha zemědělská (NZ), nezastavitelná pro bydlení",
+    "poznamka": "LPIS orná, střední produkční potenciál; stavební bydlení ÚP vylučuje."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo Q100 dle vstupu.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Bez NATURA / ZCHÚ.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "NZ odpovídá zemědělskému záměru; riziko vzniká jen pokud by investor čekal zástavbu.",
+      "zdroj": "ÚP Židlochovice — ruční výpis pro test"
+    },
+    "dalsi": [
+      {
+        "nazev": "přístup",
+        "uroven": "nizke",
+        "duvod": "Polní cesta napojená na silnici — obvykle akceptovatelné pro hospodaření."
+      },
+      {
+        "nazev": "chybějící cena a výnosy",
+        "uroven": "stredni",
+        "duvod": "Bez nájemních/výnosových dat nelze uzavřít ekonomiku výkupu."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 72,
+    "duvod": "KN, ÚP, LPIS, záplavy a AOPK jsou konzistentní; chybí ekonomické vstupy."
+  },
+  "overit_rucne": [
+    "BPEJ a skutečná bonita / výnosnost v lokalitě",
+    "Existující pachty a LPIS uživatel",
+    "Tržní cena orné půdy v okrese Brno-venkov",
+    "LV a věcná břemena"
+  ],
+  "duvodovani": "Pro zemědělský výkup je profil čistý a velikost atraktivní, proto skóre nad 60. Doporučení zůstává zkoumat_dal kvůli chybějící ceně a výnosům — ne kvůli právním limitům.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "cena / nabídka",
+    "detailní BPEJ kódy",
+    "pachtovní vztahy"
+  ],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče."
+  }
+}

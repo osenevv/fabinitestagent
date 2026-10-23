@@ -1,0 +1,59 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Litoměřice",
+    "cislo_parcely": "456/1",
+    "vymera_m2": 1450,
+    "druh_pozemku": "ostatní plocha"
+  },
+  "shrnuti": "Pozemek v aktivní zóně záplavového území s nezastavitelným ÚP — pro výkup se stavebním záměrem nevhodný.",
+  "skore_zajmu": 12,
+  "doporuceni": "odmitnout",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nevyuzitelny",
+    "up_zamer": "plocha zeleně / nezastavitelná",
+    "poznamka": "ÚP preferuje zeleň a vodohospodářské funkce; stavební využití prakticky vyloučeno záplavami."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "kriticke",
+      "duvod": "Aktivní zóna záplavového území, zároveň Q20 i Q100 — pro stavební výkup disqualifikující.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "nizke",
+      "duvod": "Bez NATURA/ZCHÚ; blízkost toku sama o sobě není ZCHÚ, ale souvisí se záplavami.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "vysoke",
+      "duvod": "Nezastavitelná plocha zeleně omezuje komerční i obytné využití.",
+      "zdroj": "ÚP Litoměřice — ruční výpis pro test"
+    },
+    "dalsi": [
+      {
+        "nazev": "přístup a sítě",
+        "uroven": "stredni",
+        "duvod": "Nezpevněná cesta, inženýrské sítě neznámé — sekundární vůči záplavám."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 85,
+    "duvod": "Klíčová rizika (záplavy + ÚP) jsou ve vstupu explicitní a vzájemně se podporují."
+  },
+  "overit_rucne": [
+    "Aktuální zákres aktivní zóny a Q100 na oficiálních mapách",
+    "Zda neexistuje specifický vodohospodářský / kompenzační záměr obce",
+    "LV a případná omezení vlastnictví"
+  ],
+  "duvodovani": "Kombinace aktivní zóny a nezastavitelného ÚP vede k odmítnutí. Skóre je nízké i při jistotě vysoké — data jsou jasná, potenciál není.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "stav inženýrských sítí"
+  ],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče."
+  }
+}

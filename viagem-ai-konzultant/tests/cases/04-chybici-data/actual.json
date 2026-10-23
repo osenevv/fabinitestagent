@@ -1,0 +1,67 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Olomouc-město",
+    "cislo_parcely": "778",
+    "vymera_m2": 540,
+    "druh_pozemku": "orná půda"
+  },
+  "shrnuti": "Malá orná parcela s pouze základním KN výpisem — bez ÚP, záplav a ochrany nelze rozhodnout o výkupu.",
+  "skore_zajmu": 28,
+  "doporuceni": "odlozit",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nejisty",
+    "up_zamer": null,
+    "poznamka": "Druh pozemku sugeruje zemědělství, ale bez ÚP a LPIS nelze potvrdit stavební ani produkční potenciál."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "neznamo",
+      "duvod": "Zaplavové údaje ve vstupu chybí.",
+      "zdroj": null
+    },
+    "ochrana_prirody": {
+      "uroven": "neznamo",
+      "duvod": "AOPK/NATURA ve vstupu chybí.",
+      "zdroj": null
+    },
+    "uzemni_plan": {
+      "uroven": "neznamo",
+      "duvod": "Územní plán obce není uveden.",
+      "zdroj": null
+    },
+    "dalsi": [
+      {
+        "nazev": "neúplný vstup",
+        "uroven": "vysoke",
+        "duvod": "Chybí vizuální kontext, LPIS, přístup i sítě — hodnocení je spekulativní."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 22,
+    "duvod": "K dispozici jen KÚ, číslo, výměra a druh pozemku; klíčové limity chybí."
+  },
+  "overit_rucne": [
+    "Územní plán města Olomouce pro parcelu 778",
+    "Záplavové mapy (Q100 / aktivní zóna)",
+    "AOPK MapoMat — NATURA a ZCHÚ",
+    "LPIS kultura a BPEJ",
+    "Aktuální LV na ČÚZK a lokalizace na mapy.cz"
+  ],
+  "duvodovani": "Bez ÚP a rizikových vrstev nelze doporučit výkup. Skóre je nízko-střední rezerva jen z existence parcely v KN; doporučení odložit do doplnění dat. Jistota záměrně nízká.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "uzemni_plan",
+    "zaplavove_uzemi",
+    "ochrana_prirody",
+    "lpis",
+    "vizualni_kontext",
+    "adresa / lokalizace",
+    "pristup a site"
+  ],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče."
+  }
+}

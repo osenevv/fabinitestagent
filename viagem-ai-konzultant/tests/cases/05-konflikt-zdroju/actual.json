@@ -1,0 +1,64 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Hradec Králové",
+    "cislo_parcely": "2012/8",
+    "vymera_m2": 2100,
+    "druh_pozemku": "orná půda"
+  },
+  "shrnuti": "Okrajová parcela s potenciálem bydlení dle ÚP, ale LPIS drží ornou půdu a záplavy si odporují — výkup jen po vyjasnění konfliktů.",
+  "skore_zajmu": 48,
+  "doporuceni": "zkoumat_dal",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nejisty",
+    "up_zamer": "zastavitelná plocha bydlení (BI), max. 2 NP",
+    "poznamka": "ÚP míří na RD, KN+LPIS na aktivní zemědělství; bez vyřazení z LPIS / změny kultury je stavební cesta nejistá."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "neznamo",
+      "duvod": "Dvě ruční kontroly si odporují (mimo Q100 vs částečně v Q100).",
+      "zdroj": "konflikt dvou ručních kontrol — test"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Bez NATURA a ZCHÚ dle vstupu.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "stredni",
+      "duvod": "BI je příznivé, ale koliduje s evidencí orné půdy v KN/LPIS — riziko zpoždění a podmínek záboru ZPF.",
+      "zdroj": "ÚP Hradec Králové — ruční výpis A pro test"
+    },
+    "dalsi": [
+      {
+        "nazev": "zábor ZPF / LPIS",
+        "uroven": "vysoke",
+        "duvod": "Aktivní orná v LPIS při stavebním záměru vyžaduje formalizovaný zábor a může výkup zkomplikovat."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 40,
+    "duvod": "Konflikt ÚP vs LPIS a nejednoznačné záplavy snižují spolehlivost skóre."
+  },
+  "overit_rucne": [
+    "Oficiální zákres Q100 vůči parcele (jedna autoritativní mapa)",
+    "Soulad ÚP BI s evidencí ZPF a postup vyřazení z LPIS",
+    "Aktuální LV a zda není zemědělský pacht",
+    "Vyjádření obce k časování zastavitelnosti BI"
+  ],
+  "duvodovani": "Potenciál bydlení drží skóre ve středu, ale pravidlo konfliktů zakazuje 'vykupit'. Doporučení zkoumat_dal do vyjasnění záplav a ZPF.",
+  "konflikty_dat": [
+    "ÚP uvádí BI (bydlení), KN+LPIS uvádí ornou půdu v aktivní evidenci",
+    "Záplavy: analytik A = mimo Q100, analytik B = částečně v Q100"
+  ],
+  "chybejici_data": [
+    "jednoznačný stav záplav",
+    "stav řízení o vynětí ze ZPF (pokud probíhá)"
+  ],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče."
+  }
+}

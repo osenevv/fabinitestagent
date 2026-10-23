@@ -1,0 +1,11 @@
+{
+  "popis": "Velká orná NZ bez stavebního ÚP — zemědělský potenciál, ne stavební.",
+  "vstup": "../../data/parcels/06-zemedelsky.json",
+  "kontroly": {
+    "doporuceni": ["zkoumat_dal", "vykupit", "odlozit"],
+    "skore_zajmu_min": 40,
+    "skore_zajmu_max": 75,
+    "hlavni_potencial": ["zemedelsky"]
+  },
+  "poznamka": "vykupit je přípustné jen pokud model hodnotí zemědělský výkup; nesmí tvrdit stavební potenciál."
+}

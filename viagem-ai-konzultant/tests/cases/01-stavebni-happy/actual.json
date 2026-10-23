@@ -1,0 +1,61 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Brno-město",
+    "cislo_parcely": "1234/5",
+    "vymera_m2": 812,
+    "druh_pozemku": "zastavěná plocha a nádvoří"
+  },
+  "shrnuti": "Proluka v ploše bydlení BH s přístupem a sítěmi v ulici, mimo záplavy i ochranu přírody — silný kandidát na výkup ke stavebnímu využití.",
+  "skore_zajmu": 82,
+  "doporuceni": "vykupit",
+  "vyuzitelnost": {
+    "hlavni_potencial": "stavebni",
+    "up_zamer": "plocha bydlení (BH), max. 4 NP",
+    "poznamka": "Zbořeniště v řadové zástavbě; ÚP podporuje bydlení, vizuální kontext potvrzuje stavební logiku."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Vstup uvádí mimo Q100 i aktivní zónu.",
+      "zdroj": "mapy záplav ČHMÚ / DIBAVOD — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Bez NATURA 2000 a mimo ZCHÚ dle AOPK.",
+      "zdroj": "AOPK MapoMat — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "BH je příznivé; zbývá ověřit konkrétní regulativy a případné limity zástavby v podrobnější dokumentaci.",
+      "zdroj": "Územní plán města Brna — ruční výpis pro test"
+    },
+    "dalsi": [
+      {
+        "nazev": "stav zbořeniště / sanace",
+        "uroven": "nizke",
+        "duvod": "Může vyžadovat odstranění zbytků staveb a geotechniku před projektem."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 78,
+    "duvod": "KN, ÚP, záplavy i AOPK jsou ve vstupu vyplněné a konzistentní; chybí jen cena a detailní regulace."
+  },
+  "overit_rucne": [
+    "Aktuální výpis LV a věcná břemena na ČÚZK",
+    "Detailní regulativy BH a limity výšky v úplném znění ÚP Brna",
+    "Kapacita přípojek (voda, kanalizace, elektřina) u správců sítí",
+    "Orientační tržní cena srovnatelných proluk v lokalitě"
+  ],
+  "duvodovani": "Stavební potenciál je podložený druhem pozemku, ÚP BH a absencí kritických rizik. Skóre je vysoké; drobná rezerva zůstává na sanaci zbořeniště a přesné regulativy, proto jistota není maximální.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "tržní / nabídková cena",
+    "detailní geotechnika a stav podloží"
+  ],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče; live přegenerování: python evaluate.py --live data/parcels/01-stavebni-happy.json"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "02-zaplava",
+  "poznamka_ke_zdrojum": "Data sestavena ručně pro interview úlohu. Simulace parcely v aktivní zóně záplavového území.",
+  "ku": "Litoměřice",
+  "cislo_parcely": "456/1",
+  "vymera_m2": 1450,
+  "druh_pozemku": "ostatní plocha",
+  "zpusob_vyuziti": "neplodná půda",
+  "adresa_orientacni": "poblíž Labe, Litoměřice",
+  "kn_poznamky": "LV 210. Bez zástavby.",
+  "vizualni_kontext": "Rovinatý pozemek u toku, nízká vegetace, přístup po nezpevněné cestě.",
+  "uzemni_plan": {
+    "obec": "Litoměřice",
+    "funkcni_plocha": "plocha zeleně / nezastavitelná",
+    "regulace": "stavební činnost omezena; preferována zeleň a vodohospodářské funkce",
+    "zdroj": "ÚP Litoměřice — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "aktivní zóna záplavového území; v Q20 i Q100",
+    "zdroj": "mapy záplav — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Bez NATURA; vodní tok v blízkosti.",
+    "zdroj": "AOPK — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": false
+  },
+  "dalsi": {
+    "pristup": "nezpevněná cesta",
+    "inzenyrske_site": "neznámé"
+  }
+}

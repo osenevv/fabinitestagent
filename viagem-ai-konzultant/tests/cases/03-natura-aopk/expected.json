@@ -1,0 +1,9 @@
+{
+  "popis": "EVL NATURA 2000 + CHKO — stavební výkup odmítnout; zemědělský TTP jen okrajově.",
+  "vstup": "../../data/parcels/03-natura-aopk.json",
+  "kontroly": {
+    "doporuceni": ["odmitnout", "odlozit"],
+    "skore_zajmu_max": 40,
+    "hlavni_potencial": ["zemedelsky", "nevyuzitelny", "nejisty"]
+  }
+}

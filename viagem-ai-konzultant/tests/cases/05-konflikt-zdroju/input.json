@@ -1,0 +1,37 @@
+{
+  "id": "05-konflikt-zdroju",
+  "poznamka_ke_zdrojum": "Záměrný konflikt: ÚP uvádí bydlení, LPIS ornou půdu; záplavy si odporují mezi dvěma poznámkami.",
+  "ku": "Hradec Králové",
+  "cislo_parcely": "2012/8",
+  "vymera_m2": 2100,
+  "druh_pozemku": "orná půda",
+  "zpusob_vyuziti": null,
+  "adresa_orientacni": "okraj obce, Hradec Králové",
+  "kn_poznamky": "LV 556. Zemědělský pozemek.",
+  "vizualni_kontext": "Pole na okraji zástavby, přístup z místní komunikace.",
+  "uzemni_plan": {
+    "obec": "Hradec Králové",
+    "funkcni_plocha": "zastavitelná plocha bydlení (BI)",
+    "regulace": "rodinné domy, max. 2 NP",
+    "zdroj": "ÚP Hradec Králové — ruční výpis A pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "dle poznámky analytika A: mimo Q100; dle poznámky analytika B: částečně v Q100",
+    "zdroj": "konflikt dvou ručních kontrol — test"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Bez ZCHÚ.",
+    "zdroj": "AOPK — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": true,
+    "kultura": "orná půda",
+    "poznamka": "LPIS eviduje aktivní zemědělskou půdu; bez zmínky o vyřazení z LPIS."
+  },
+  "dalsi": {
+    "pristup": "místní komunikace",
+    "konflikt_poznamka": "ÚP říká BI (bydlení), KN+LPIS říká orná půda v evidenci. Záplavy nejednoznačné."
+  }
+}

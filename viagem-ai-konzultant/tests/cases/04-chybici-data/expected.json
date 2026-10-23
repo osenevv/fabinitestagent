@@ -1,0 +1,11 @@
+{
+  "popis": "Jen základní KN — musí klesnout jistota, rizika neznamo, doporučení ne vykupit.",
+  "vstup": "../../data/parcels/04-chybici-data.json",
+  "kontroly": {
+    "doporuceni": ["zkoumat_dal", "odlozit"],
+    "skore_zajmu_max": 55,
+    "jistota_max": 45,
+    "musi_mit_chybejici": true,
+    "hlavni_potencial": ["zemedelsky", "nejisty"]
+  }
+}

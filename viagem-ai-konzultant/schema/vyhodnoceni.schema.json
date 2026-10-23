@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viagem.cz/schemas/vyhodnoceni-parcely.json",
+  "title": "Vyhodnocení parcely pro výkup",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "parcelni_identifikace",
+    "shrnuti",
+    "skore_zajmu",
+    "doporuceni",
+    "vyuzitelnost",
+    "rizika",
+    "jistota",
+    "overit_rucne",
+    "duvodovani"
+  ],
+  "properties": {
+    "parcelni_identifikace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ku", "cislo_parcely"],
+      "properties": {
+        "ku": { "type": "string", "description": "Katastrální území" },
+        "cislo_parcely": { "type": "string" },
+        "vymera_m2": { "type": ["number", "null"] },
+        "druh_pozemku": { "type": ["string", "null"] }
+      }
+    },
+    "shrnuti": {
+      "type": "string",
+      "description": "1–3 věty: co parcela je a proč (ne)stojí za zájem"
+    },
+    "skore_zajmu": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "0 = bez zájmu o výkup, 100 = silný kandidát"
+    },
+    "doporuceni": {
+      "type": "string",
+      "enum": ["vykupit", "zkoumat_dal", "odlozit", "odmitnout"]
+    },
+    "vyuzitelnost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hlavni_potencial", "up_zamer", "poznamka"],
+      "properties": {
+        "hlavni_potencial": {
+          "type": "string",
+          "enum": [
+            "stavebni",
+            "zemedelsky",
+            "lesni",
+            "rekreacni",
+            "infrastrukturni",
+            "nejisty",
+            "nevyuzitelny"
+          ]
+        },
+        "up_zamer": {
+          "type": ["string", "null"],
+          "description": "Záměr dle územního plánu, pokud je uveden ve vstupu"
+        },
+        "poznamka": { "type": "string" }
+      }
+    },
+    "rizika": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zaplava", "ochrana_prirody", "uzemni_plan", "dalsi"],
+      "properties": {
+        "zaplava": { "$ref": "#/$defs/riziko" },
+        "ochrana_prirody": { "$ref": "#/$defs/riziko" },
+        "uzemni_plan": { "$ref": "#/$defs/riziko" },
+        "dalsi": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nazev", "uroven", "duvod"],
+            "properties": {
+              "nazev": { "type": "string" },
+              "uroven": {
+                "type": "string",
+                "enum": ["zadne", "nizke", "stredni", "vysoke", "kriticke", "neznamo"]
+              },
+              "duvod": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "jistota": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skore", "duvod"],
+      "properties": {
+        "skore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Jak jistý je model ohledně celkového hodnocení"
+        },
+        "duvod": { "type": "string" }
+      }
+    },
+    "overit_rucne": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Konkrétní body k manuální kontrole před výkupem"
+    },
+    "duvodovani": {
+      "type": "string",
+      "description": "Stručné odůvodnění skóre a doporučení; jen na základě vstupních dat"
+    },
+    "konflikty_dat": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Rozpory mezi zdroji ve vstupu; prázdné pole pokud žádné"
+    },
+    "chybejici_data": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Klíčová pole chybějící ve vstupu"
+    }
+  },
+  "$defs": {
+    "riziko": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uroven", "duvod"],
+      "properties": {
+        "uroven": {
+          "type": "string",
+          "enum": ["zadne", "nizke", "stredni", "vysoke", "kriticke", "neznamo"]
+        },
+        "duvod": { "type": "string" },
+        "zdroj": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

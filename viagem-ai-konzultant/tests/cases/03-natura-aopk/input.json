@@ -1,0 +1,39 @@
+{
+  "id": "03-natura-aopk",
+  "poznamka_ke_zdrojum": "Data sestavena ručně pro interview úlohu. Parcela v EVL NATURA 2000 s AOPK poznámkou.",
+  "ku": "Karlštejn",
+  "cislo_parcely": "89/3",
+  "vymera_m2": 3200,
+  "druh_pozemku": "trvalý travní porost",
+  "zpusob_vyuziti": null,
+  "adresa_orientacni": "k.ú. Karlštejn, Český kras",
+  "kn_poznamky": "LV 88. Bez staveb.",
+  "vizualni_kontext": "Svažité louky, okolí les a skály, přístup polní cestou.",
+  "uzemni_plan": {
+    "obec": "Karlštejn",
+    "funkcni_plocha": "plocha přírodní / krajinná zeleň",
+    "regulace": "nezastavitelná; ochrana krajinného rázu",
+    "zdroj": "ÚP Karlštejn — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "mimo záplavové území",
+    "zdroj": "mapy záplav — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": true,
+    "evl_nazev": "Karlštejn—Koda",
+    "aopk_zvlaste_chranene": true,
+    "zchu_typ": "CHKO Český kras (II. zóna)",
+    "poznamka": "Zásahy do biotopu podléhají souhlasu orgánu ochrany přírody; stavební záměr prakticky vyloučen.",
+    "zdroj": "AOPK MapoMat / NATURA 2000 — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": true,
+    "kultura": "TTP",
+    "poznamka": "Evidováno v LPIS jako trvalý travní porost."
+  },
+  "dalsi": {
+    "pristup": "polní cesta",
+    "inzenyrske_site": "žádné v místě"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Karlštejn",
+    "cislo_parcely": "89/3",
+    "vymera_m2": 3200,
+    "druh_pozemku": "trvalý travní porost"
+  },
+  "shrnuti": "Louka v EVL Karlštejn—Koda a II. zóně CHKO — stavební výkup nepřipadá v úvahu; zemědělské TTP jen s přísnými limity ochrany.",
+  "skore_zajmu": 18,
+  "doporuceni": "odmitnout",
+  "vyuzitelnost": {
+    "hlavni_potencial": "zemedelsky",
+    "up_zamer": "plocha přírodní / krajinná zeleň (nezastavitelná)",
+    "poznamka": "LPIS TTP existuje, ale NATURA/CHKO a ÚP blokují stavební i intenzivní rozvoj."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo záplavové území dle vstupu.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "kriticke",
+      "duvod": "EVL NATURA 2000 + CHKO Český kras II. zóna; stavební záměr prakticky vyloučen, zásahy podléhají souhlasu OOP.",
+      "zdroj": "AOPK MapoMat / NATURA 2000 — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "vysoke",
+      "duvod": "Nezastavitelná přírodní plocha / krajinná zeleň.",
+      "zdroj": "ÚP Karlštejn — ruční výpis pro test"
+    },
+    "dalsi": [
+      {
+        "nazev": "přístup",
+        "uroven": "stredni",
+        "duvod": "Pouze polní cesta, bez sítí — relevantní i pro případné zemědělské hospodaření."
+      }
+    ]
+  },
+  "jistota": {
+    "skore": 88,
+    "duvod": "Ochrana přírody a ÚP jsou ve vstupu jednoznačné; prostor pro jiný výklad je malý."
+  },
+  "overit_rucne": [
+    "Přesný zákres EVL a zóny CHKO vůči hranicím parcely",
+    "Podmínky hospodaření na TTP (dotace, omezení seče) u AOPK",
+    "LV a případná smluvní omezení"
+  ],
+  "duvodovani": "Pro výkupovou logiku zaměřenou na rozvoj je parcela disqualifikovaná ochranou přírody. Zemědělský TTP potenciál existuje formálně, ale limity CHKO/NATURA a nezastavitelný ÚP drží skóre nízko a doporučení na odmitnout.",
+  "konflikty_dat": [],
+  "chybejici_data": [],
+  "_meta": {
+    "model": "composer-agent (ruční běh finálního promptu)",
+    "live": false,
+    "poznamka": "Zaznamenáno bez API klíče."
+  }
+}

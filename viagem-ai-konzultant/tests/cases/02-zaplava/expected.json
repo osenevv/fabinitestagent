@@ -1,0 +1,10 @@
+{
+  "popis": "Aktivní zóna záplav + nezastavitelný ÚP u Labe.",
+  "vstup": "../../data/parcels/02-zaplava.json",
+  "kontroly": {
+    "doporuceni": ["odmitnout", "odlozit"],
+    "skore_zajmu_max": 35,
+    "hlavni_potencial": ["nevyuzitelny", "infrastrukturni", "nejisty"],
+    "zaplava_min": "vysoke"
+  }
+}

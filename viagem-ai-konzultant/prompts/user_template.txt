@@ -1,0 +1,5 @@
+Vyhodnoť následující parcelu pro rozhodnutí o výkupu. Vrať pouze JSON dle systémových instrukcí.
+
+```json
+{{PARCEL_JSON}}
+```
