@@ -21,7 +21,7 @@ Samostatný balíček pro Viagem a.s.: LLM prompt + robustní Python obal (stdli
 2. **Deterministický prostor (Kód & Politika):**
    - **Formální validace kontraktu:** Vlastní lehký validátor podmnožiny JSON Schema 2020-12 ([konzultant/schema.py](konzultant/schema.py)) ověřuje typy, enumy, rozsahy i `additionalProperties: false`.
    - **Výpočet skóre zájmu:** Skóre není stochastický odhad LLM, ale deterministický součet složek. Runner automaticky dopočítává bodové srážky za rizika a při kritickém riziku vynucuje strop 35 bodů ([konzultant/policy.py](konzultant/policy.py)).
-   - **Tvrdé bezpečnostní brány (Gatekeeper):** Doporučení `vykupit` je algoritmicky zakázáno, pokud existuje jakékoli kritické riziko (včetně právního stavu v `rizika.pravni_stav` a `rizika.dalsi`), neprázdné konflikty dat, jistota < 60 nebo skóre < 70.
+   - **Brány po klasifikaci (ne „ochrana před modelem“):** Doporučení `vykupit` je algoritmicky zakázáno, pokud *už klasifikovaný* výstup obsahuje kritické riziko (včetně `rizika.pravni_stav` a `rizika.dalsi`), neprázdné `konflikty_dat`, jistotu &lt; 60 nebo skóre &lt; 70. Brány **nečtou** parcelní JSON samy — když model špatně označí Q100 jako `nizke` nebo po injekci vyprázdní konflikty, `vykupit` projít může. Spolehlivost na čerstvé parcele tedy stojí primárně na promptu + modelu; brány jen sjednocují konzistenci po klasifikaci.
    - **Samoopravný cyklus (Auto-repair):** Pokud model vygeneruje nevalidní JSON nebo poruší bránu, runner automaticky provede 1 opravný konverzační tah s výpisem konkrétních chyb.
 
 ---
@@ -122,10 +122,27 @@ python3 evaluate.py vycuc_z_kn.txt
 
 ---
 
-## 5. Živá evaluace a měření konzistence (`--eval-live`)
+## 5. Provenance `actual.json` (důležité)
 
-Při dostupném API klíči lze spustit celou sadu 12 případů živě napříč N běhy pro ověření stability výstupů modelu:
+**Zelená offline sada ≠ změřený LLM.**
+
+- Soubory `tests/cases/*/actual.json` jsou **referenční výstupy autora** sestavené podle finálního promptu a politiky (`_meta.zdroj: referencni`). **Nejsou** výsledkem live běhu GPT/Claude/Gemini/xAI.
+- `python3 evaluate.py --run-all-tests` ověřuje shodu fixtures ↔ expected ↔ schéma/brány. **Neměří**, že produkční model prompt dodrží.
+- `--offline` jen přehrává uložený `actual.json` a na stderr píše, že nejde o model.
+
+### Stav live evaluace v tomto odevzdání
+
+V prostředí, kde balíček vznikal, **nebyl dostupný žádný API klíč** (`OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `XAI_API_KEY`) ani použitelný Claude Code CLI pro měření. **Live eval proto neproběhl** — v `tests/results/` není report z reálného modelu. Viz také `notes/reflexe.md`.
+
+### Jak spustit live (až bude klíč)
+
 ```bash
-python3 evaluate.py --eval-live --runs 3 --threshold 0.85
+# Tvrdé cases z change-review (nebo celá sada bez --cases):
+python3 evaluate.py --eval-live --cases 02-zaplava,05-konflikt-zdroju,07-q100-stavebni,08-exekuce,11-prompt-injection,12-volny-text \
+  --runs 1 --threshold 0.85
+
+# Celá sada + přepsat actuals reálnými výstupy:
+python3 evaluate.py --eval-live --runs 3 --threshold 0.85 --save-actual
 ```
-Výsledný JSON report s naměřeným rozptylem skóre a stabilitou doporučení se automaticky uloží do `tests/results/eval-YYYYMMDD-HHMMSS.json`.
+
+Report se uloží do `tests/results/eval-YYYYMMDD-HHMMSS.json`.
