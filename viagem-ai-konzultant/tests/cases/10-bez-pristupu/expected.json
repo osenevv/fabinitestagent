@@ -1,0 +1,20 @@
+{
+  "popis": "BI bez přístupu z veřejné komunikace — pro stavbu kritické, nesmí být vykupit.",
+  "kontroly": {
+    "doporuceni": [
+      "odmitnout",
+      "odlozit",
+      "zkoumat_dal"
+    ],
+    "nesmi_doporuceni": [
+      "vykupit"
+    ],
+    "skore_zajmu_max": 35,
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "rizika_min": {
+      "pristup": "kriticke"
+    }
+  }
+}

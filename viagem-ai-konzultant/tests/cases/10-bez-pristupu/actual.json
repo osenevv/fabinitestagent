@@ -1,0 +1,92 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Jihlava",
+    "cislo_parcely": "4410/7",
+    "vymera_m2": 1100,
+    "druh_pozemku": "zahrada",
+    "zpusob_vyuziti": null,
+    "lv": "6120"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Zahrada v zastavitelné ploše BI bez jakéhokoli přístupu z veřejné komunikace — bez zajištění cesty nepostavitelná.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "stavebni",
+    "up_zamer": "zastavitelná plocha bydlení (BI), max. 2 NP",
+    "poznamka": "ÚP stavbu dovoluje, ale stavební povolení vyžaduje přístup."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo Q100.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Mimo EVL/PO a ZCHÚ.",
+      "zdroj": "AOPK MapoMat — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "BI odpovídá záměru.",
+      "zdroj": "ÚP Jihlava — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "kriticke",
+      "duvod": "Nesousedí s veřejnou komunikací a věcné břemeno cesty není zapsáno.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 6120 bez věcných břemen; vlastníci neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": [
+      {
+        "nazev": "vynětí ze ZPF",
+        "uroven": "stredni",
+        "duvod": "Zahrada v BI — vynětí ze ZPF; třída ochrany neuvedena."
+      },
+      {
+        "nazev": "inženýrské sítě",
+        "uroven": "stredni",
+        "duvod": "Sítě ~60 m v ulici; přípojky přes cizí pozemky."
+      }
+    ]
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 18,
+    "rizika": 21,
+    "pravni_stav": 16,
+    "pristup": 0
+  },
+  "skore_zajmu": 35,
+  "doporuceni": "odmitnout",
+  "jistota": {
+    "skore": 70,
+    "duvod": "Absence přístupu je ve vstupu výslovná."
+  },
+  "overit_rucne": [
+    "Katastrální mapa: sousední parcely a jejich vlastníci (možnost zřídit věcné břemeno cesty)",
+    "Zda obec neplánuje komunikaci v rámci plochy BI (územní studie)"
+  ],
+  "duvodovani": "Kritický přístup = strop skóre 35. Bez smluvně zajištěné cesty jde o nepostavitelný vnitroblok; přehodnotit jen pokud soused nabídne věcné břemeno.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "vlastníci sousedních parcel"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

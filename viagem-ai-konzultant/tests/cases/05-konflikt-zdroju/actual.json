@@ -3,20 +3,26 @@
     "ku": "Hradec Králové",
     "cislo_parcely": "2012/8",
     "vymera_m2": 2100,
-    "druh_pozemku": "orná půda"
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "556"
   },
-  "shrnuti": "Okrajová parcela s potenciálem bydlení dle ÚP, ale LPIS drží ornou půdu a záplavy si odporují — výkup jen po vyjasnění konfliktů.",
-  "skore_zajmu": 48,
-  "doporuceni": "zkoumat_dal",
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Pole na okraji zástavby v zastavitelné ploše BI — typický stavební greenfield před vynětím ze ZPF; záplavy si odporují, proto výkup až po jednoznačném zákresu Q100.",
   "vyuzitelnost": {
-    "hlavni_potencial": "nejisty",
+    "hlavni_potencial": "stavebni",
     "up_zamer": "zastavitelná plocha bydlení (BI), max. 2 NP",
-    "poznamka": "ÚP míří na RD, KN+LPIS na aktivní zemědělství; bez vyřazení z LPIS / změny kultury je stavební cesta nejistá."
+    "poznamka": "Orná v KN/LPIS + BI v ÚP není rozpor dat, ale běžný stav před vynětím ze ZPF."
   },
   "rizika": {
     "zaplava": {
       "uroven": "neznamo",
-      "duvod": "Dvě ruční kontroly si odporují (mimo Q100 vs částečně v Q100).",
+      "duvod": "Konflikt: analytik A = mimo Q100, analytik B = částečně v Q100.",
       "zdroj": "konflikt dvou ručních kontrol — test"
     },
     "ochrana_prirody": {
@@ -25,40 +31,63 @@
       "zdroj": "AOPK — ruční kontrola"
     },
     "uzemni_plan": {
-      "uroven": "stredni",
-      "duvod": "BI je příznivé, ale koliduje s evidencí orné půdy v KN/LPIS — riziko zpoždění a podmínek záboru ZPF.",
+      "uroven": "nizke",
+      "duvod": "Zastavitelná plocha BI odpovídá stavebnímu záměru; ověřit podmínky využití plochy.",
       "zdroj": "ÚP Hradec Králové — ruční výpis A pro test"
+    },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Přístup z místní komunikace.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "neznamo",
+      "duvod": "LV 556 bez informace o zátěžích; možný zemědělský pacht neověřen.",
+      "zdroj": "kn_poznamky"
     },
     "dalsi": [
       {
-        "nazev": "zábor ZPF / LPIS",
-        "uroven": "vysoke",
-        "duvod": "Aktivní orná v LPIS při stavebním záměru vyžaduje formalizovaný zábor a může výkup zkomplikovat."
+        "nazev": "vynětí ze ZPF",
+        "uroven": "stredni",
+        "duvod": "Orná půda v BI vyžaduje souhlas s vynětím a odvody; třída ochrany neuvedena."
       }
     ]
   },
+  "skore_slozky": {
+    "vyuzitelnost": 22,
+    "rizika": 18,
+    "pravni_stav": 8,
+    "pristup": 20
+  },
+  "skore_zajmu": 68,
+  "doporuceni": "zkoumat_dal",
   "jistota": {
-    "skore": 40,
-    "duvod": "Konflikt ÚP vs LPIS a nejednoznačné záplavy snižují spolehlivost skóre."
+    "skore": 45,
+    "duvod": "ÚP a přístup jasné; záplavy rozporné a právní stav neznámý."
   },
   "overit_rucne": [
-    "Oficiální zákres Q100 vůči parcele (jedna autoritativní mapa)",
-    "Soulad ÚP BI s evidencí ZPF a postup vyřazení z LPIS",
-    "Aktuální LV a zda není zemědělský pacht",
-    "Vyjádření obce k časování zastavitelnosti BI"
+    "Oficiální zákres Q100 (ČHMÚ / DIBAVOD) vůči hranici parcely 2012/8",
+    "Třída ochrany ZPF dle BPEJ a výše odvodů za vynětí",
+    "Aktuální LV 556 — pacht, zátěže, vlastníci",
+    "Podmínky využití plochy BI v ÚP Hradec Králové (etapizace, územní studie)"
   ],
-  "duvodovani": "Potenciál bydlení drží skóre ve středu, ale pravidlo konfliktů zakazuje 'vykupit'. Doporučení zkoumat_dal do vyjasnění záplav a ZPF.",
+  "duvodovani": "Stavební potenciál (BI, přístup) je reálný; rozporné záplavy jsou konflikt dat, který bránou blokuje vykupit. Rozdíl KN/LPIS vs ÚP jsem nehodnotil jako konflikt — jde o vynětí ze ZPF.",
   "konflikty_dat": [
-    "ÚP uvádí BI (bydlení), KN+LPIS uvádí ornou půdu v aktivní evidenci",
     "Záplavy: analytik A = mimo Q100, analytik B = částečně v Q100"
   ],
   "chybejici_data": [
-    "jednoznačný stav záplav",
-    "stav řízení o vynětí ze ZPF (pokud probíhá)"
+    "jednoznačný zákres záplav",
+    "třída ochrany ZPF (BPEJ)",
+    "zátěže / pacht na LV 556"
   ],
   "_meta": {
-    "model": "referenční výstup autora dle finálního promptu (bez API)",
-    "live": false,
-    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
   }
 }

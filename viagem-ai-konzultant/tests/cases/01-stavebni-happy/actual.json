@@ -3,11 +3,17 @@
     "ku": "Brno-město",
     "cislo_parcely": "1234/5",
     "vymera_m2": 812,
-    "druh_pozemku": "zastavěná plocha a nádvoří"
+    "druh_pozemku": "zastavěná plocha a nádvoří",
+    "zpusob_vyuziti": "zbořeniště",
+    "lv": "4451"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
   },
   "shrnuti": "Proluka v ploše bydlení BH s přístupem a sítěmi v ulici, mimo záplavy i ochranu přírody — silný kandidát na výkup ke stavebnímu využití.",
-  "skore_zajmu": 82,
-  "doporuceni": "vykupit",
   "vyuzitelnost": {
     "hlavni_potencial": "stavebni",
     "up_zamer": "plocha bydlení (BH), max. 4 NP",
@@ -29,6 +35,16 @@
       "duvod": "BH je příznivé; zbývá ověřit konkrétní regulativy a případné limity zástavby v podrobnější dokumentaci.",
       "zdroj": "Územní plán města Brna — ruční výpis pro test"
     },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Přímý přístup z veřejné komunikace dle vstupu.",
+      "zdroj": "vizuální kontext / dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 4451 bez věcných břemen ve výpisu; vlastnická struktura neuvedena.",
+      "zdroj": "kn_poznamky"
+    },
     "dalsi": [
       {
         "nazev": "stav zbořeniště / sanace",
@@ -37,6 +53,14 @@
       }
     ]
   },
+  "skore_slozky": {
+    "vyuzitelnost": 26,
+    "rizika": 26,
+    "pravni_stav": 16,
+    "pristup": 20
+  },
+  "skore_zajmu": 88,
+  "doporuceni": "vykupit",
   "jistota": {
     "skore": 78,
     "duvod": "KN, ÚP, záplavy i AOPK jsou ve vstupu vyplněné a konzistentní; chybí jen cena a detailní regulace."
@@ -47,15 +71,21 @@
     "Kapacita přípojek (voda, kanalizace, elektřina) u správců sítí",
     "Orientační tržní cena srovnatelných proluk v lokalitě"
   ],
-  "duvodovani": "Stavební potenciál je podložený druhem pozemku, ÚP BH a absencí kritických rizik. Skóre je vysoké; drobná rezerva zůstává na sanaci zbořeniště a přesné regulativy, proto jistota není maximální.",
+  "duvodovani": "Stavební potenciál je podložený druhem pozemku, ÚP BH, přímým přístupem a absencí kritických rizik. Všechny brány pro vykupit splněny; rezerva zůstává na sanaci zbořeniště, regulativy a ověření vlastníků na LV.",
   "konflikty_dat": [],
   "chybejici_data": [
     "tržní / nabídková cena",
+    "vlastnická struktura (LV)",
     "detailní geotechnika a stav podloží"
   ],
   "_meta": {
-    "model": "referenční výstup autora dle finálního promptu (bez API)",
-    "live": false,
-    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
   }
 }

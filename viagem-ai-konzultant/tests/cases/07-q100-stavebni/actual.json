@@ -3,11 +3,17 @@
     "ku": "Uherské Hradiště",
     "cislo_parcely": "612/2",
     "vymera_m2": 980,
-    "druh_pozemku": "zahrada"
+    "druh_pozemku": "zahrada",
+    "zpusob_vyuziti": null,
+    "lv": "330"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
   },
   "shrnuti": "Zahrada v BI s přístupem a sítěmi, ale v Q100 (mimo aktivní zónu) — stavební potenciál ano, výkup jen po hydrologickém ověření.",
-  "skore_zajmu": 45,
-  "doporuceni": "zkoumat_dal",
   "vyuzitelnost": {
     "hlavni_potencial": "stavebni",
     "up_zamer": "plocha bydlení (BI), max. 2 NP",
@@ -29,14 +35,32 @@
       "duvod": "BI je v souladu se stavebním záměrem; zbývá ověřit regulativy a případné podmínky v záplavě.",
       "zdroj": "ÚP Uherské Hradiště — ruční výpis pro test"
     },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Přístup z místní komunikace.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 330 bez věcných břemen ve výpisu; vlastníci neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
     "dalsi": [
       {
-        "nazev": "pojištění a stavební podmínky v Q100",
+        "nazev": "vynětí ze ZPF",
         "uroven": "stredni",
-        "duvod": "Může omezit financování a typ konstrukce."
+        "duvod": "Zahrada v BI — před stavbou vynětí ze ZPF; třída ochrany neuvedena."
       }
     ]
   },
+  "skore_slozky": {
+    "vyuzitelnost": 22,
+    "rizika": 9,
+    "pravni_stav": 16,
+    "pristup": 20
+  },
+  "skore_zajmu": 67,
+  "doporuceni": "zkoumat_dal",
   "jistota": {
     "skore": 70,
     "duvod": "ÚP, záplavy i ochrana jsou ve vstupu konzistentní; ekonomika Q100 není vyčíslená."
@@ -53,8 +77,13 @@
     "detailní výškové poměry / niveleta"
   ],
   "_meta": {
-    "model": "referenční výstup autora dle finálního promptu (bez API)",
-    "live": false,
-    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
   }
 }

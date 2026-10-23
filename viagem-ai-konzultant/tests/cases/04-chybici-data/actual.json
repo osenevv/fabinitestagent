@@ -3,11 +3,17 @@
     "ku": "Olomouc-město",
     "cislo_parcely": "778",
     "vymera_m2": 540,
-    "druh_pozemku": "orná půda"
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "1203"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
   },
   "shrnuti": "Malá orná parcela s pouze základním KN výpisem — bez ÚP, záplav a ochrany nelze rozhodnout o výkupu.",
-  "skore_zajmu": 28,
-  "doporuceni": "odlozit",
   "vyuzitelnost": {
     "hlavni_potencial": "nejisty",
     "up_zamer": null,
@@ -29,14 +35,26 @@
       "duvod": "Územní plán obce není uveden.",
       "zdroj": null
     },
-    "dalsi": [
-      {
-        "nazev": "neúplný vstup",
-        "uroven": "vysoke",
-        "duvod": "Chybí vizuální kontext, LPIS, přístup i sítě — hodnocení je spekulativní."
-      }
-    ]
+    "pristup": {
+      "uroven": "neznamo",
+      "duvod": "Přístup ve vstupu neuveden.",
+      "zdroj": null
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 1203 bez dalších poznámek ve výpisu; vlastníci neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": []
   },
+  "skore_slozky": {
+    "vyuzitelnost": 8,
+    "rizika": 12,
+    "pravni_stav": 16,
+    "pristup": 8
+  },
+  "skore_zajmu": 44,
+  "doporuceni": "odlozit",
   "jistota": {
     "skore": 22,
     "duvod": "K dispozici jen KÚ, číslo, výměra a druh pozemku; klíčové limity chybí."
@@ -60,8 +78,13 @@
     "přístup a sítě"
   ],
   "_meta": {
-    "model": "referenční výstup autora dle finálního promptu (bez API)",
-    "live": false,
-    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
   }
 }

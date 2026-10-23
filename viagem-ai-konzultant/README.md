@@ -1,113 +1,131 @@
 # Viagem — AI konzultant parcely (interview úloha)
 
-Samostatný balíček pro Viagem a.s.: LLM prompt + minimální Python obal, který z dat o jedné parcele vrátí strukturované vyhodnocení pro rozhodnutí o výkupu.
+Samostatný balíček pro Viagem a.s.: LLM prompt + robustní Python obal (stdlib only), který z dat o jedné parcele vrátí strukturované vyhodnocení pro rozhodnutí o výkupu.
 
-**Jazyk:** čeština (prompt, výstup, poznámky).  
-**Mimo rozsah:** integrace na ČÚZK API, automatické stahování open dat. Data v testech jsou **ručně sestavené** fikční, ale realistické výpisy pro úlohu.
+**Jazyk:** čeština (prompt, výstup, poznámky, kód).  
+**Závislosti:** Python 3.10+ bez jakýchkoli externích pip knihoven (zero-dependency stdlib).  
+**Mimo rozsah:** integrace na ČÚZK API a stahování open dat (dle zadání).
 
-Kořen tohoto repa obsahuje jiný projekt (FABINI). Tento adresář `viagem-ai-konzultant/` je self-contained — lze ho zipnout nebo zkopírovat do privátního repa.
+---
 
-## Layout
+## 1. Architektura a principy návrhu
+
+Řešení striktně rozděluje práci mezi dvě domény:
+
+1. **Latentní prostor (LLM úsudek):**
+   - Interpretace plánovacích, přírodních a právních limitů do standardizované taxonomie (`uroven`: `zadne`, `nizke`, `stredni`, `vysoke`, `kriticke`, `neznamo`).
+   - Volba výkupní strategie (`hlavni_potencial`: `stavebni`, `zemedelsky`, `lesni`, `rekreacni`, `infrastrukturni`, `nejisty`, `nevyuzitelny`).
+   - Odhad kvality využitelnosti (`vyuzitelnost`: 0–30 bodů dle lokality a regulativů).
+   - Slovní shrnutí, detekce rozporů (`konflikty_dat`), chybějící údaje a checklist manuální prověrky (`overit_rucne`).
+
+2. **Deterministický prostor (Kód & Politika):**
+   - **Formální validace kontraktu:** Vlastní lehký validátor podmnožiny JSON Schema 2020-12 ([konzultant/schema.py](konzultant/schema.py)) ověřuje typy, enumy, rozsahy i `additionalProperties: false`.
+   - **Výpočet skóre zájmu:** Skóre není stochastický odhad LLM, ale deterministický součet složek. Runner automaticky dopočítává bodové srážky za rizika a při kritickém riziku vynucuje strop 35 bodů ([konzultant/policy.py](konzultant/policy.py)).
+   - **Tvrdé bezpečnostní brány (Gatekeeper):** Doporučení `vykupit` je algoritmicky zakázáno, pokud existuje jakékoli kritické riziko (včetně právního stavu v `rizika.pravni_stav` a `rizika.dalsi`), neprázdné konflikty dat, jistota < 60 nebo skóre < 70.
+   - **Samoopravný cyklus (Auto-repair):** Pokud model vygeneruje nevalidní JSON nebo poruší bránu, runner automaticky provede 1 opravný konverzační tah s výpisem konkrétních chyb.
+
+---
+
+## 2. Struktura balíčku
 
 ```
 viagem-ai-konzultant/
   README.md
-  requirements.txt
-  evaluate.py                 # runner: parcela → JSON vyhodnocení
+  requirements.txt            # volitelné (pro dev/test)
+  evaluate.py                 # hlavní CLI runner
   prompts/
-    system.txt                # finální system prompt
-    user_template.txt         # šablona user zprávy
+    system.txt                # finální system prompt (pravidla, taxonomie, brány)
+    user_template.txt         # šablona uživatelské zprávy s oddělením dat
   schema/
-    vyhodnoceni.schema.json   # JSON Schema výstupu
-  data/parcels/               # vstupní parcely
-  tests/cases/<id>/
-    input.json                # vstup
-    expected.json             # prahové kontroly
-    actual.json               # zaznamenaný / referenční výstup
+    vyhodnoceni.schema.json   # formální JSON Schema kontrakt
+  konzultant/                 # aplikační logika (stdlib)
+    __init__.py
+    schema.py                 # zero-dependency JSON Schema validátor
+    policy.py                 # deterministická pravidla skóre a bezpečnostní brány
+    inputs.py                 # loader JSON / volného textu a sanitizace
+    pipeline.py               # orchestrace LLM volání a opravného cyklu
+    providers.py              # adaptéry (Claude Code CLI, OpenAI, Anthropic, Gemini, xAI)
+    checks.py                 # ověřování testovacích prahů expected.json
+  tests/
+    test_konzultant.py        # unit testy knihovny (16 testů, <0.01s)
+    cases/                    # 12 testovacích scénářů (vstup, očekávání, výstup)
+      01-stavebni-happy/      # stavební proluka BH (happy path)
+      02-zaplava/             # aktivní zóna záplavového území
+      03-natura-aopk/         # EVL NATURA 2000 + II. zóna CHKO
+      04-chybici-data/        # neúplný KN vstup bez vrstev
+      05-konflikt-zdroju/     # rozporné záplavy (konflikt) vs ZPF (běžný stav)
+      06-zemedelsky/          # bonitní orná půda NZ
+      07-q100-stavebni/       # Q100 bez aktivní zóny (stavební nuance)
+      08-exekuce/             # exekuční příkaz k prodeji na LV (blokovaný převod)
+      09-spoluvlastnicky-podil/# menšinový podíl 1/10 a zapsaný pacht
+      10-bez-pristupu/        # vnitroblok bez přístupu z veřejné cesty
+      11-prompt-injection/    # pokus o manipulaci promptu v poznámce KN
+      12-volny-text/          # surový textový výpis z KN (kopírováno z webu)
   notes/
-    iterace.md
-    reflexe.md
+    iterace.md                # záznam designových a architektonických změn
+    reflexe.md                # zhodnocení limitů a doporučení pro produkci
 ```
 
-## Architektura (proč tak)
+---
 
-- **Jeden system prompt + user šablona** — žádný multi-agent; na pohovoru rozhoduje kvalita promptu.
-- **Stabilní JSON** — skóre, doporučení, rizika (záplavy / ochrana / ÚP), využitelnost, jistota, `overit_rucne`, konflikty, chybějící data.
-- **Tvrdé gate** — `kriticke` riziko, neprázdné konflikty nebo jistota &lt; 40 ⇒ zákaz `vykupit` (v promptu i ve validaci runneru).
+## 3. Rychlé spuštění (Quickstart)
 
-## Minimální vstup (čerstvá parcela)
+### 3.1 Spuštění testovací sady (offline gate testy)
+Nevyžaduje žádný API klíč, trvá pod 1 vteřinu:
+```bash
+python3 evaluate.py --run-all-tests
+python3 -m unittest tests/test_konzultant.py
+```
 
-Stačí JSON; chybějící vrstvy model musí označit jako `neznamo`, ne vymýšlet:
+### 3.2 Spuštění vyhodnocení parcely
+Skript automaticky detekuje dostupného poskytovatele (lokální Claude Code CLI `claude`, případně env klíče `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `XAI_API_KEY`):
 
+```bash
+# Vyhodnocení konkrétního souboru:
+python3 evaluate.py tests/cases/01-stavebni-happy/input.json
+
+# Zkouška čerstvé parcely ze schránky (volný text z KN):
+pbpaste | python3 evaluate.py -
+
+# Zobrazení sestaveného promptu:
+python3 evaluate.py --print-prompt tests/cases/08-exekuce/input.json
+
+# Offline přehrání uloženého referenčního výstupu:
+python3 evaluate.py --offline tests/cases/01-stavebni-happy/input.json
+```
+
+---
+
+## 4. Zadání čerstvé parcely na pohovoru
+
+Zkoušející může předložit parcelu ve dvou podobách:
+
+### A) Strukturovaný JSON
+Stačí vytvořit JSON s dostupnými údaji (např. `moje_parcela.json`):
 ```json
 {
-  "id": "moje-parcela",
-  "ku": "…",
-  "cislo_parcely": "…",
-  "vymera_m2": 0,
-  "druh_pozemku": "…",
-  "kn_poznamky": "…",
-  "uzemni_plan": null,
-  "zaplavove_uzemi": null,
-  "ochrana_prirody": null,
-  "lpis": null,
-  "vizualni_kontext": null,
-  "dalsi": {}
+  "ku": "Královo Pole",
+  "cislo_parcely": "1520/2",
+  "vymera_m2": 1200,
+  "druh_pozemku": "zahrada",
+  "lv": "412",
+  "uzemni_plan": { "funkcni_plocha": "BI" },
+  "dalsi": { "pristup": "místní komunikace" }
 }
 ```
 
-Vzory: `data/parcels/*.json`.
-
-## Požadavky
-
-- Python 3.10+ (stdlib)
-- Volitelně `pip install -r requirements.txt` (žádný SDK nutný)
-
+### B) Surový text z Nahlížení do KN nebo e-mailu
+Skript i prompt přímo podporují nestrukturovaný text. Stačí zkopírovat výpis z webu ČÚZK do souboru nebo poslat přes stdin:
 ```bash
-cd viagem-ai-konzultant
-python3 evaluate.py --run-all-tests
-python3 evaluate.py data/parcels/01-stavebni-happy.json
+python3 evaluate.py vycuc_z_kn.txt
 ```
 
-**Bez `--live`:** skript vrátí uložený `tests/cases/<id>/actual.json` a na stderr napíše, že nejde o live model.
+---
 
-## Live model
+## 5. Živá evaluace a měření konzistence (`--eval-live`)
 
+Při dostupném API klíči lze spustit celou sadu 12 případů živě napříč N běhy pro ověření stability výstupů modelu:
 ```bash
-export OPENAI_API_KEY=...          # default gpt-4o-mini
-# nebo XAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY
-
-python3 evaluate.py --live data/parcels/01-stavebni-happy.json --out /tmp/out.json
-python3 evaluate.py --live --save-actual data/parcels/07-q100-stavebni.json
-python3 evaluate.py --print-prompt data/parcels/04-chybici-data.json
+python3 evaluate.py --eval-live --runs 3 --threshold 0.85
 ```
-
-Override: `OPENAI_MODEL`, `OPENAI_BASE_URL`, `XAI_MODEL`, `GEMINI_MODEL`, `ANTHROPIC_MODEL`.
-
-## Provenance `actual.json`
-
-V prostředí cloud agenta **nebyly** API klíče. Soubory `actual.json` jsou **referenční výstupy autora** sestavené podle finálního `prompts/system.txt` (ne nezávislý běh GPT/Claude). V `_meta` je to uvedené. Pro měření reálného modelu: `--live --save-actual` a znovu `--run-all-tests`.
-
-## Test cases
-
-| ID | Scénář | Očekávání |
-| --- | --- | --- |
-| `01-stavebni-happy` | Proluka BH, čistá rizika | `vykupit`, stavební |
-| `02-zaplava` | Aktivní zóna + nezastavitelný ÚP | `odmitnout`, kritické záplavy |
-| `03-natura-aopk` | EVL + CHKO | odmítnout stavební výkup |
-| `04-chybici-data` | Jen KN | `neznamo`, nízká jistota |
-| `05-konflikt-zdroju` | ÚP vs LPIS, rozporné záplavy | konflikty, ne `vykupit` |
-| `06-zemedelsky` | Orná NZ | `zemedelsky` |
-| `07-q100-stavebni` | BI + Q100 mimo aktivní zónu | `zkoumat_dal`/`odlozit`, záplava ≥ vysoké |
-
-`expected.json` = prahy (doporučení, rozsah skóre, konflikty), ne byte-identický text.
-
-## Odevzdání
-
-1. Prompt: `prompts/system.txt` (+ `user_template.txt`)
-2. Obal: `evaluate.py`
-3. Test cases: `tests/cases/`
-4. Iterace: `notes/iterace.md`
-5. Reflexe: `notes/reflexe.md`
-
-Žádné secrety do repa — jen env vars.
+Výsledný JSON report s naměřeným rozptylem skóre a stabilitou doporučení se automaticky uloží do `tests/results/eval-YYYYMMDD-HHMMSS.json`.

@@ -1,13 +1,22 @@
 {
-  "popis": "ÚP BI vs LPIS orná + konfliktní záplavy — konflikty_dat, ne vykupit.",
-  "vstup": "../../data/parcels/05-konflikt-zdroju.json",
+  "popis": "Rozporné záplavy = konflikt; ÚP BI na orné = vynětí ze ZPF, NE konflikt.",
   "kontroly": {
-    "doporuceni": ["zkoumat_dal", "odlozit"],
-    "skore_zajmu_min": 30,
-    "skore_zajmu_max": 65,
+    "doporuceni": [
+      "zkoumat_dal"
+    ],
+    "skore_zajmu_min": 35,
+    "skore_zajmu_max": 70,
     "musi_mit_konflikt": true,
-    "hlavni_potencial": ["nejisty", "stavebni", "zemedelsky"],
-    "zaplava_in": ["neznamo", "vysoke", "kriticke", "stredni"]
-  },
-  "poznamka": "Očekáváme konflikty_dat a nejednoznačné/zvýšené riziko záplav — ne 'vykupit'."
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "rizika_in": {
+      "zaplava": [
+        "neznamo"
+      ]
+    },
+    "dalsi_obsahuje": [
+      "ZPF"
+    ]
+  }
 }

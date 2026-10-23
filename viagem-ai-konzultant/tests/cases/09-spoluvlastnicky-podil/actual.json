@@ -1,0 +1,83 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Kroměříž",
+    "cislo_parcely": "3102",
+    "vymera_m2": 24000,
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "1440"
+  },
+  "vlastnictvi": {
+    "typ": "spoluvlastnictvi",
+    "podil_k_vykupu": "1/10",
+    "pocet_vlastniku": 6,
+    "poznamka": "Šest spoluvlastníků (1/2 + 5× 1/10); nabízen menšinový podíl 1/10."
+  },
+  "shrnuti": "Kvalitní orný blok 2,4 ha v NZ, ale k výkupu je jen podíl 1/10 a pozemek je do 2031 v pachtu — nízká likvidita a žádná kontrola nad užíváním.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "zemedelsky",
+    "up_zamer": "plocha zemědělská (NZ)",
+    "poznamka": "Hodnota podílu je výrazně nižší než poměrná část celku."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo Q100.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Mimo EVL/PO a ZCHÚ.",
+      "zdroj": "AOPK MapoMat — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "zadne",
+      "duvod": "NZ odpovídá zemědělské strategii.",
+      "zdroj": "ÚP Kroměříž — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "nizke",
+      "duvod": "Polní cesta napojená na silnici.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "vysoke",
+      "duvod": "Menšinový podíl 1/10 (rozhodování vyžaduje většinu, prodej celku souhlas ostatních) + zapsaný pacht do 2031.",
+      "zdroj": "vlastnictvi / kn_poznamky"
+    },
+    "dalsi": []
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 18,
+    "rizika": 30,
+    "pravni_stav": 5,
+    "pristup": 16
+  },
+  "skore_zajmu": 69,
+  "doporuceni": "zkoumat_dal",
+  "jistota": {
+    "skore": 70,
+    "duvod": "Vlastnictví i pacht jsou ve vstupu explicitní; cena podílu neznámá."
+  },
+  "overit_rucne": [
+    "LV 1440 — přesné podíly a případná předkupní práva spoluvlastníků",
+    "Pachtovní smlouva: výše pachtovného, výpovědní podmínky do 2031",
+    "Zájem ostatních spoluvlastníků o prodej (možnost scelení na 1/1)"
+  ],
+  "duvodovani": "Plánovací profil je čistý, ale menšinový podíl s pachtem dává vysoké právní riziko; brána blokuje vykupit. Smysl má jen jako krok ke scelení — proto zkoumat_dal.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "cena podílu",
+    "výše pachtovného"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

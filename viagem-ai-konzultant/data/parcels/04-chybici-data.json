@@ -1,17 +1,1 @@
-{
-  "id": "04-chybici-data",
-  "poznamka_ke_zdrojum": "Záměrně neúplný vstup — test ošetření chybějících dat. Jen základní KN výpis.",
-  "ku": "Olomouc-město",
-  "cislo_parcely": "778",
-  "vymera_m2": 540,
-  "druh_pozemku": "orná půda",
-  "zpusob_vyuziti": null,
-  "adresa_orientacni": null,
-  "kn_poznamky": "LV 1203. Bez dalších poznámek ve výpisu.",
-  "vizualni_kontext": null,
-  "uzemni_plan": null,
-  "zaplavove_uzemi": null,
-  "ochrana_prirody": null,
-  "lpis": null,
-  "dalsi": {}
-}
+../../tests/cases/04-chybici-data/input.json

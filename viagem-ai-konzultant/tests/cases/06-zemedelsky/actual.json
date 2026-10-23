@@ -3,11 +3,17 @@
     "ku": "Židlochovice",
     "cislo_parcely": "334",
     "vymera_m2": 18500,
-    "druh_pozemku": "orná půda"
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "91"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
   },
   "shrnuti": "Kompaktní orný blok ~1,85 ha v ploše NZ, mimo záplavy i ochranu — vhodný ke zvážení zemědělského výkupu, nikoli stavebního.",
-  "skore_zajmu": 62,
-  "doporuceni": "zkoumat_dal",
   "vyuzitelnost": {
     "hlavni_potencial": "zemedelsky",
     "up_zamer": "plocha zemědělská (NZ), nezastavitelná pro bydlení",
@@ -25,23 +31,30 @@
       "zdroj": "AOPK — ruční kontrola"
     },
     "uzemni_plan": {
-      "uroven": "nizke",
-      "duvod": "NZ odpovídá zemědělskému záměru; riziko vzniká jen pokud by investor čekal zástavbu.",
+      "uroven": "zadne",
+      "duvod": "Plocha NZ odpovídá zemědělské strategii.",
       "zdroj": "ÚP Židlochovice — ruční výpis pro test"
     },
-    "dalsi": [
-      {
-        "nazev": "přístup",
-        "uroven": "nizke",
-        "duvod": "Polní cesta napojená na silnici — obvykle akceptovatelné pro hospodaření."
-      },
-      {
-        "nazev": "chybějící cena a výnosy",
-        "uroven": "stredni",
-        "duvod": "Bez nájemních/výnosových dat nelze uzavřít ekonomiku výkupu."
-      }
-    ]
+    "pristup": {
+      "uroven": "nizke",
+      "duvod": "Polní cesta napojená na silnici III. třídy — pro hospodaření postačuje.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 91 bez věcných břemen; vlastníci a případný pacht neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": []
   },
+  "skore_slozky": {
+    "vyuzitelnost": 22,
+    "rizika": 30,
+    "pravni_stav": 16,
+    "pristup": 16
+  },
+  "skore_zajmu": 84,
+  "doporuceni": "vykupit",
   "jistota": {
     "skore": 72,
     "duvod": "KN, ÚP, LPIS, záplavy a AOPK jsou konzistentní; chybí ekonomické vstupy."
@@ -52,7 +65,7 @@
     "Tržní cena orné půdy v okrese Brno-venkov",
     "LV a věcná břemena"
   ],
-  "duvodovani": "Pro zemědělský výkup je profil čistý a velikost atraktivní, proto skóre nad 60. Doporučení zůstává zkoumat_dal kvůli chybějící ceně a výnosům — ne kvůli právním limitům.",
+  "duvodovani": "Pro zemědělský výkup je profil čistý: NZ, kompaktní blok 1,85 ha, bez záplav a ochrany, přístup postačuje. Brány pro vykupit splněny; před podpisem ověřit pacht a cenu (overit_rucne).",
   "konflikty_dat": [],
   "chybejici_data": [
     "cena / nabídka",
@@ -60,8 +73,13 @@
     "pachtovní vztahy"
   ],
   "_meta": {
-    "model": "referenční výstup autora dle finálního promptu (bez API)",
-    "live": false,
-    "poznamka": "Nezávislý live běh: python evaluate.py --live --save-actual data/parcels/<id>.json"
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
   }
 }

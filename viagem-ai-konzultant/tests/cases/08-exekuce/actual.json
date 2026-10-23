@@ -1,0 +1,83 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Židenice",
+    "cislo_parcely": "1880/3",
+    "vymera_m2": 640,
+    "druh_pozemku": "zastavěná plocha a nádvoří",
+    "zpusob_vyuziti": "zbořeniště",
+    "lv": "2207"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Stavebně výborná proluka v BH, ale na LV je exekuční příkaz k prodeji — převod je do skončení exekuce blokovaný.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "stavebni",
+    "up_zamer": "plocha bydlení (BH), max. 5 NP",
+    "poznamka": "Stavební logika silná; problém je čistě právní."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo Q100 i aktivní zónu.",
+      "zdroj": "mapy záplav ČHMÚ — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Mimo EVL/PO a ZCHÚ.",
+      "zdroj": "AOPK MapoMat — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "BH odpovídá záměru; ověřit regulativy.",
+      "zdroj": "ÚP města Brna — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Veřejná komunikace.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "kriticke",
+      "duvod": "Exekuční příkaz k prodeji — vlastník nesmí s nemovitostí nakládat; navíc exekutorské a smluvní zástavní právo.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": []
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 26,
+    "rizika": 27,
+    "pravni_stav": 0,
+    "pristup": 20
+  },
+  "skore_zajmu": 35,
+  "doporuceni": "odlozit",
+  "jistota": {
+    "skore": 75,
+    "duvod": "Plánovací vrstvy jasné; stav exekuce (výše dluhu, dražba) neznámý."
+  },
+  "overit_rucne": [
+    "Aktuální LV 2207 a stav exekučního řízení u soudního exekutora (případná dražba)",
+    "Výše zajištěných pohledávek banky a exekutora vůči tržní hodnotě",
+    "Regulativy plochy BH v ÚP Brna"
+  ],
+  "duvodovani": "Bez exekuce by šlo o kandidáta na vykupit. Kritický právní stav blokuje převod: strop skóre 35 a doporučení odložit do výmazu exekuce, případně sledovat dražbu.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "výše pohledávek a stav exekuce",
+    "tržní cena"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}
