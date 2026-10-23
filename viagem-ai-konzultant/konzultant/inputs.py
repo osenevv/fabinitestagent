@@ -41,6 +41,8 @@ def parse_parcel_text(text: str, fallback_id: str | None = None) -> dict[str, An
     except json.JSONDecodeError:
         parsed = None
     if isinstance(parsed, dict):
+        if "id" not in parsed and fallback_id:
+            parsed["id"] = fallback_id
         return parsed
     parcel: dict[str, Any] = {"volny_text": text}
     if fallback_id:
@@ -80,9 +82,9 @@ def render_parcel(parcel: dict[str, Any]) -> str:
         body = view["volny_text"]
     else:
         body = json.dumps(view, ensure_ascii=False, indent=2)
-    # Uzavírací značku uvnitř dat neutralizujeme, aby data nemohla „vyskočit“
-    # z bloku <parcela_data> a tvářit se jako instrukce.
-    return body.replace("</parcela_data>", "</parcela_data_>")
+    # Uzavírací značku uvnitř dat neutralizujeme (včetně mezer a velikosti písmen),
+    # aby data nemohla „vyskočit“ z bloku <parcela_data> a tvářit se jako instrukce.
+    return re.sub(r"<\s*/\s*parcela_data\s*>", "</parcela_data_>", body, flags=re.IGNORECASE)
 
 
 def build_messages(parcel: dict[str, Any]) -> list[dict[str, str]]:

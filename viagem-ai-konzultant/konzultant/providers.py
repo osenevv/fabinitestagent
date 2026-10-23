@@ -141,6 +141,8 @@ class ClaudeCodeProvider(Provider):
         if isinstance(structured, dict):
             return json.dumps(structured, ensure_ascii=False)
         result = envelope.get("result")
+        if isinstance(result, dict):
+            return json.dumps(result, ensure_ascii=False)
         if not isinstance(result, str) or not result.strip():
             raise ProviderError("Claude Code vrátil prázdný výsledek")
         return result

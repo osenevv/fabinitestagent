@@ -203,7 +203,21 @@ def run_single(args: argparse.Namespace) -> int:
     else:
         provider = select_provider(args.provider, args.model)
         print(f"Model: {provider.name}/{provider.model}", file=sys.stderr)
-        result = evaluate(parcel, provider)
+        try:
+            result = evaluate(parcel, provider)
+        except ProviderError as e:
+            if args.provider is None and not os.environ.get("VIAGEM_PROVIDER"):
+                for cand, key in (("openai", "OPENAI_API_KEY"), ("anthropic", "ANTHROPIC_API_KEY"),
+                                  ("gemini", "GEMINI_API_KEY"), ("xai", "XAI_API_KEY")):
+                    if os.environ.get(key) and cand != provider.name:
+                        print(f"Poznámka: {provider.name} selhal ({e}). Přepínám na záložního poskytovatele {cand}...", file=sys.stderr)
+                        provider = select_provider(cand, args.model)
+                        result = evaluate(parcel, provider)
+                        break
+                else:
+                    raise
+            else:
+                raise
         result_data = result.data
         result_data["_meta"] = build_meta(result, provider)
         for line in result.normalizace + result.politika:
