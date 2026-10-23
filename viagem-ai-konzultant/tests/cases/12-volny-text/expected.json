@@ -1,0 +1,34 @@
+{
+  "popis": "Volný text zkopírovaný z Nahlížení do KN (ne JSON) — vytěžit identifikaci, vrstvy neznamo.",
+  "kontroly": {
+    "doporuceni": [
+      "zkoumat_dal",
+      "odlozit"
+    ],
+    "nesmi_doporuceni": [
+      "vykupit"
+    ],
+    "jistota_max": 50,
+    "musi_mit_chybejici": true,
+    "vlastnictvi_typ": [
+      "spoluvlastnictvi"
+    ],
+    "identifikace": {
+      "ku": "Kolín",
+      "cislo_parcely": "2215/4",
+      "lv": "3390",
+      "vymera_m2": 1260
+    },
+    "rizika_in": {
+      "zaplava": [
+        "neznamo"
+      ],
+      "uzemni_plan": [
+        "neznamo"
+      ],
+      "ochrana_prirody": [
+        "neznamo"
+      ]
+    }
+  }
+}

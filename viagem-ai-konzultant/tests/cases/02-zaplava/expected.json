@@ -1,0 +1,17 @@
+{
+  "popis": "Aktivní zóna záplav + nezastavitelný ÚP u Labe.",
+  "kontroly": {
+    "doporuceni": [
+      "odmitnout"
+    ],
+    "skore_zajmu_max": 35,
+    "hlavni_potencial": [
+      "nevyuzitelny",
+      "infrastrukturni",
+      "nejisty"
+    ],
+    "rizika_min": {
+      "zaplava": "kriticke"
+    }
+  }
+}

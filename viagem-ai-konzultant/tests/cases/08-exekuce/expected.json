@@ -1,0 +1,19 @@
+{
+  "popis": "Ideální proluka s exekučním příkazem k prodeji — převod blokovaný, nesmí být vykupit.",
+  "kontroly": {
+    "doporuceni": [
+      "odlozit",
+      "odmitnout"
+    ],
+    "nesmi_doporuceni": [
+      "vykupit"
+    ],
+    "skore_zajmu_max": 35,
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "rizika_min": {
+      "pravni_stav": "kriticke"
+    }
+  }
+}

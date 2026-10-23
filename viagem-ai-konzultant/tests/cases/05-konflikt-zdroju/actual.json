@@ -1,0 +1,93 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Hradec Králové",
+    "cislo_parcely": "2012/8",
+    "vymera_m2": 2100,
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "556"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Pole na okraji zástavby v zastavitelné ploše BI — typický stavební greenfield před vynětím ze ZPF; záplavy si odporují, proto výkup až po jednoznačném zákresu Q100.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "stavebni",
+    "up_zamer": "zastavitelná plocha bydlení (BI), max. 2 NP",
+    "poznamka": "Orná v KN/LPIS + BI v ÚP není rozpor dat, ale běžný stav před vynětím ze ZPF."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "neznamo",
+      "duvod": "Konflikt: analytik A = mimo Q100, analytik B = částečně v Q100.",
+      "zdroj": "konflikt dvou ručních kontrol — test"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Bez NATURA a ZCHÚ dle vstupu.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "Zastavitelná plocha BI odpovídá stavebnímu záměru; ověřit podmínky využití plochy.",
+      "zdroj": "ÚP Hradec Králové — ruční výpis A pro test"
+    },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Přístup z místní komunikace.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "neznamo",
+      "duvod": "LV 556 bez informace o zátěžích; možný zemědělský pacht neověřen.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": [
+      {
+        "nazev": "vynětí ze ZPF",
+        "uroven": "stredni",
+        "duvod": "Orná půda v BI vyžaduje souhlas s vynětím a odvody; třída ochrany neuvedena."
+      }
+    ]
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 22,
+    "rizika": 18,
+    "pravni_stav": 8,
+    "pristup": 20
+  },
+  "skore_zajmu": 68,
+  "doporuceni": "zkoumat_dal",
+  "jistota": {
+    "skore": 45,
+    "duvod": "ÚP a přístup jasné; záplavy rozporné a právní stav neznámý."
+  },
+  "overit_rucne": [
+    "Oficiální zákres Q100 (ČHMÚ / DIBAVOD) vůči hranici parcely 2012/8",
+    "Třída ochrany ZPF dle BPEJ a výše odvodů za vynětí",
+    "Aktuální LV 556 — pacht, zátěže, vlastníci",
+    "Podmínky využití plochy BI v ÚP Hradec Králové (etapizace, územní studie)"
+  ],
+  "duvodovani": "Stavební potenciál (BI, přístup) je reálný; rozporné záplavy jsou konflikt dat, který bránou blokuje vykupit. Rozdíl KN/LPIS vs ÚP jsem nehodnotil jako konflikt — jde o vynětí ze ZPF.",
+  "konflikty_dat": [
+    "Záplavy: analytik A = mimo Q100, analytik B = částečně v Q100"
+  ],
+  "chybejici_data": [
+    "jednoznačný zákres záplav",
+    "třída ochrany ZPF (BPEJ)",
+    "zátěže / pacht na LV 556"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

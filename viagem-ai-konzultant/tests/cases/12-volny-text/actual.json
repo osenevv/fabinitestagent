@@ -1,0 +1,89 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Kolín",
+    "cislo_parcely": "2215/4",
+    "vymera_m2": 1260,
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "3390"
+  },
+  "vlastnictvi": {
+    "typ": "spoluvlastnictvi",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": 2,
+    "poznamka": "Dva spoluvlastníci po 1/2; nabízený podíl neuveden."
+  },
+  "shrnuti": "Orná parcela 1 260 m² v k. ú. Kolín, dva spoluvlastníci po 1/2, LV bez omezení; ÚP, záplavy ani ochrana přírody ve výpisu nejsou — o výkupu nelze rozhodnout.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nejisty",
+    "up_zamer": null,
+    "poznamka": "Orná v ZPF; bez ÚP nelze určit stavební ani zemědělskou strategii."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "neznamo",
+      "duvod": "Výpis z KN záplavy neobsahuje.",
+      "zdroj": null
+    },
+    "ochrana_prirody": {
+      "uroven": "neznamo",
+      "duvod": "Výpis z KN ochranu přírody neobsahuje.",
+      "zdroj": null
+    },
+    "uzemni_plan": {
+      "uroven": "neznamo",
+      "duvod": "Územní plán ve výpisu není.",
+      "zdroj": null
+    },
+    "pristup": {
+      "uroven": "neznamo",
+      "duvod": "Přístup ve výpisu není.",
+      "zdroj": null
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "Bez omezení vlastnického práva a jiných zápisů; výkup celku vyžaduje souhlas obou spoluvlastníků.",
+      "zdroj": "výpis z Nahlížení do KN"
+    },
+    "dalsi": []
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 8,
+    "rizika": 12,
+    "pravni_stav": 16,
+    "pristup": 8
+  },
+  "skore_zajmu": 44,
+  "doporuceni": "zkoumat_dal",
+  "jistota": {
+    "skore": 30,
+    "duvod": "Jen KN výpis (volný text); žádná plánovací ani riziková vrstva."
+  },
+  "overit_rucne": [
+    "Územní plán města Kolína pro p. č. 2215/4",
+    "Záplavové mapy ČHMÚ / DIBAVOD pro p. č. 2215/4",
+    "AOPK MapoMat — NATURA 2000 a ZCHÚ",
+    "Katastrální mapa / mapy.cz — přístup z veřejné komunikace",
+    "Zda oba spoluvlastníci prodávají celek"
+  ],
+  "duvodovani": "Identifikace a vlastnictví jsou z výpisu jasné, rizikové vrstvy chybí úplně → nízká jistota, brána blokuje vykupit. Doplnit vrstvy dle overit_rucne.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "územní plán",
+    "záplavové území",
+    "ochrana přírody",
+    "LPIS",
+    "přístup",
+    "tržní cena"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

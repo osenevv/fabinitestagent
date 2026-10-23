@@ -1,0 +1,90 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Olomouc-město",
+    "cislo_parcely": "778",
+    "vymera_m2": 540,
+    "druh_pozemku": "orná půda",
+    "zpusob_vyuziti": null,
+    "lv": "1203"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Malá orná parcela s pouze základním KN výpisem — bez ÚP, záplav a ochrany nelze rozhodnout o výkupu.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nejisty",
+    "up_zamer": null,
+    "poznamka": "Druh pozemku sugeruje zemědělství, ale bez ÚP a LPIS nelze potvrdit stavební ani produkční potenciál."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "neznamo",
+      "duvod": "Záplavové údaje ve vstupu chybí.",
+      "zdroj": null
+    },
+    "ochrana_prirody": {
+      "uroven": "neznamo",
+      "duvod": "AOPK/NATURA ve vstupu chybí.",
+      "zdroj": null
+    },
+    "uzemni_plan": {
+      "uroven": "neznamo",
+      "duvod": "Územní plán obce není uveden.",
+      "zdroj": null
+    },
+    "pristup": {
+      "uroven": "neznamo",
+      "duvod": "Přístup ve vstupu neuveden.",
+      "zdroj": null
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 1203 bez dalších poznámek ve výpisu; vlastníci neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": []
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 8,
+    "rizika": 12,
+    "pravni_stav": 16,
+    "pristup": 8
+  },
+  "skore_zajmu": 44,
+  "doporuceni": "odlozit",
+  "jistota": {
+    "skore": 22,
+    "duvod": "K dispozici jen KÚ, číslo, výměra a druh pozemku; klíčové limity chybí."
+  },
+  "overit_rucne": [
+    "Územní plán města Olomouce pro parcelu 778",
+    "Záplavové mapy (Q100 / aktivní zóna)",
+    "AOPK MapoMat — NATURA a ZCHÚ",
+    "LPIS kultura a BPEJ",
+    "Aktuální LV na ČÚZK a lokalizace na mapy.cz"
+  ],
+  "duvodovani": "Bez ÚP a rizikových vrstev nelze doporučit výkup. Skóre je nízko-střední rezerva jen z existence parcely v KN; doporučení odložit do doplnění dat. Jistota záměrně nízká.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "uzemni_plan",
+    "zaplavove_uzemi",
+    "ochrana_prirody",
+    "lpis",
+    "vizualni_kontext",
+    "adresa / lokalizace",
+    "přístup a sítě"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

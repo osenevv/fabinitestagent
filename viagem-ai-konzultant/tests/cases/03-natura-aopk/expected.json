@@ -1,0 +1,18 @@
+{
+  "popis": "EVL NATURA 2000 + CHKO II. zóna — stavba vyloučena, TTP jen okrajově.",
+  "kontroly": {
+    "doporuceni": [
+      "odmitnout",
+      "odlozit"
+    ],
+    "skore_zajmu_max": 40,
+    "hlavni_potencial": [
+      "zemedelsky",
+      "nevyuzitelny",
+      "nejisty"
+    ],
+    "rizika_min": {
+      "ochrana_prirody": "vysoke"
+    }
+  }
+}

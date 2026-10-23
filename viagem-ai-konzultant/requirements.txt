@@ -1,0 +1,3 @@
+# Runner používá pouze stdlib (urllib, json, argparse).
+# Volitelně pro striktní validaci schématu:
+# jsonschema>=4.0

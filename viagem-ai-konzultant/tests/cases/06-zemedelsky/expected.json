@@ -1,0 +1,27 @@
+{
+  "popis": "Velká orná NZ bez stavebního ÚP — zemědělský výkup, ne stavební.",
+  "kontroly": {
+    "doporuceni": [
+      "vykupit"
+    ],
+    "nesmi_doporuceni": [
+      "odmitnout",
+      "odlozit",
+      "zkoumat_dal"
+    ],
+    "skore_zajmu_min": 70,
+    "skore_zajmu_max": 90,
+    "hlavni_potencial": [
+      "zemedelsky"
+    ],
+    "bez_konfliktu": true,
+    "rizika_in": {
+      "pristup": [
+        "zadne",
+        "nizke",
+        "stredni"
+      ]
+    }
+  },
+  "poznamka": "Čistý zemědělský profil se splněnými branami — primární doporuceni je vykupit (ne volný pás vykupit|zkoumat_dal)."
+}

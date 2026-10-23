@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viagem.cz/schemas/vyhodnoceni-parcely.json",
+  "title": "Vyhodnocení parcely pro výkup",
+  "description": "Kontrakt výstupu modelu. Všechna pole jsou povinná (chybějící hodnota = null), aby schéma šlo předat poskytovateli jako strict structured output. Runner přidává `_meta` až po validaci — není součástí tohoto kontraktu.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "parcelni_identifikace",
+    "vlastnictvi",
+    "shrnuti",
+    "vyuzitelnost",
+    "rizika",
+    "skore_slozky",
+    "skore_zajmu",
+    "doporuceni",
+    "jistota",
+    "overit_rucne",
+    "duvodovani",
+    "konflikty_dat",
+    "chybejici_data"
+  ],
+  "properties": {
+    "parcelni_identifikace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ku", "cislo_parcely", "vymera_m2", "druh_pozemku", "zpusob_vyuziti", "lv"],
+      "properties": {
+        "ku": { "type": ["string", "null"], "description": "Katastrální území; null jen pokud ve vstupu chybí" },
+        "cislo_parcely": { "type": ["string", "null"] },
+        "vymera_m2": { "type": ["number", "null"], "minimum": 0 },
+        "druh_pozemku": { "type": ["string", "null"] },
+        "zpusob_vyuziti": { "type": ["string", "null"] },
+        "lv": { "type": ["string", "null"], "description": "Číslo listu vlastnictví" }
+      }
+    },
+    "vlastnictvi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["typ", "podil_k_vykupu", "pocet_vlastniku", "poznamka"],
+      "properties": {
+        "typ": {
+          "type": "string",
+          "enum": ["vyhradni", "spoluvlastnictvi", "sjm", "neznamo"],
+          "description": "vyhradni = 1/1 jeden vlastník; sjm = společné jmění manželů; spoluvlastnictvi = ideální podíly"
+        },
+        "podil_k_vykupu": { "type": ["string", "null"], "description": "Např. \"1/1\", \"1/6\"; null pokud neuvedeno" },
+        "pocet_vlastniku": { "type": ["integer", "null"], "minimum": 1 },
+        "poznamka": { "type": "string" }
+      }
+    },
+    "shrnuti": {
+      "type": "string",
+      "minLength": 1,
+      "description": "1–3 věty: co parcela je a proč (ne)stojí za zájem"
+    },
+    "vyuzitelnost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hlavni_potencial", "up_zamer", "poznamka"],
+      "properties": {
+        "hlavni_potencial": {
+          "type": "string",
+          "enum": ["stavebni", "zemedelsky", "lesni", "rekreacni", "infrastrukturni", "nejisty", "nevyuzitelny"],
+          "description": "Výkupní strategie, vůči které je počítáno skore_zajmu"
+        },
+        "up_zamer": { "type": ["string", "null"], "description": "Záměr dle územního plánu, pokud je uveden ve vstupu" },
+        "poznamka": { "type": "string" }
+      }
+    },
+    "rizika": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zaplava", "ochrana_prirody", "uzemni_plan", "pristup", "pravni_stav", "dalsi"],
+      "properties": {
+        "zaplava": { "$ref": "#/$defs/riziko" },
+        "ochrana_prirody": { "$ref": "#/$defs/riziko" },
+        "uzemni_plan": { "$ref": "#/$defs/riziko" },
+        "pristup": { "$ref": "#/$defs/riziko" },
+        "pravni_stav": { "$ref": "#/$defs/riziko" },
+        "dalsi": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nazev", "uroven", "duvod"],
+            "properties": {
+              "nazev": { "type": "string" },
+              "uroven": { "$ref": "#/$defs/uroven" },
+              "duvod": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "skore_slozky": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rubrika skóre; skore_zajmu MUSÍ být přesně součet složek (runner kontroluje)",
+      "required": ["vyuzitelnost", "rizika", "pravni_stav", "pristup"],
+      "properties": {
+        "vyuzitelnost": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "rizika": { "type": "integer", "minimum": 0, "maximum": 30 },
+        "pravni_stav": { "type": "integer", "minimum": 0, "maximum": 20 },
+        "pristup": { "type": "integer", "minimum": 0, "maximum": 20 }
+      }
+    },
+    "skore_zajmu": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Součet skore_slozky; 0 = bez zájmu, 100 = silný kandidát v rámci hlavni_potencial"
+    },
+    "doporuceni": {
+      "type": "string",
+      "enum": ["vykupit", "zkoumat_dal", "odlozit", "odmitnout"]
+    },
+    "jistota": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skore", "duvod"],
+      "properties": {
+        "skore": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "duvod": { "type": "string" }
+      }
+    },
+    "overit_rucne": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Konkrétní body k manuální kontrole před výkupem"
+    },
+    "duvodovani": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stručné odůvodnění skóre a doporučení; jen na základě vstupních dat"
+    },
+    "konflikty_dat": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Rozpory mezi zdroji ve vstupu a podezřelé pokyny ve vstupu; [] pokud žádné"
+    },
+    "chybejici_data": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Klíčové údaje chybějící ve vstupu; [] pokud žádné"
+    }
+  },
+  "$defs": {
+    "uroven": {
+      "type": "string",
+      "enum": ["zadne", "nizke", "stredni", "vysoke", "kriticke", "neznamo"]
+    },
+    "riziko": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uroven", "duvod", "zdroj"],
+      "properties": {
+        "uroven": { "$ref": "#/$defs/uroven" },
+        "duvod": { "type": "string" },
+        "zdroj": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

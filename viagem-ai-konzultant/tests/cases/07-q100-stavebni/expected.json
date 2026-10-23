@@ -1,0 +1,19 @@
+{
+  "popis": "BI + Q100 mimo aktivní zónu — vysoké riziko, ne automatické odmítnutí.",
+  "kontroly": {
+    "doporuceni": [
+      "zkoumat_dal",
+      "odlozit"
+    ],
+    "skore_zajmu_min": 25,
+    "skore_zajmu_max": 70,
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "rizika_in": {
+      "zaplava": [
+        "vysoke"
+      ]
+    }
+  }
+}

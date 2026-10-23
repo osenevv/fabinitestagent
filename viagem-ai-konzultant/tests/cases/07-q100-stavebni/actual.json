@@ -1,0 +1,89 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Uherské Hradiště",
+    "cislo_parcely": "612/2",
+    "vymera_m2": 980,
+    "druh_pozemku": "zahrada",
+    "zpusob_vyuziti": null,
+    "lv": "330"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Zahrada v BI s přístupem a sítěmi, ale v Q100 (mimo aktivní zónu) — stavební potenciál ano, výkup jen po hydrologickém ověření.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "stavebni",
+    "up_zamer": "plocha bydlení (BI), max. 2 NP",
+    "poznamka": "ÚP podporuje RD; Q100 výrazně zvedá náklady a pojištění, aktivní zóna ale není."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "vysoke",
+      "duvod": "Parcela v Q100, mimo aktivní zónu — stavební záměr možný jen s omezeními, ne kritické vyloučení jako u aktivní zóny.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "zadne",
+      "duvod": "Bez NATURA / ZCHÚ.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "nizke",
+      "duvod": "BI je v souladu se stavebním záměrem; zbývá ověřit regulativy a případné podmínky v záplavě.",
+      "zdroj": "ÚP Uherské Hradiště — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "zadne",
+      "duvod": "Přístup z místní komunikace.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "nizke",
+      "duvod": "LV 330 bez věcných břemen ve výpisu; vlastníci neuvedeni.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": [
+      {
+        "nazev": "vynětí ze ZPF",
+        "uroven": "stredni",
+        "duvod": "Zahrada v BI — před stavbou vynětí ze ZPF; třída ochrany neuvedena."
+      }
+    ]
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 22,
+    "rizika": 9,
+    "pravni_stav": 16,
+    "pristup": 20
+  },
+  "skore_zajmu": 67,
+  "doporuceni": "zkoumat_dal",
+  "jistota": {
+    "skore": 70,
+    "duvod": "ÚP, záplavy i ochrana jsou ve vstupu konzistentní; ekonomika Q100 není vyčíslená."
+  },
+  "overit_rucne": [
+    "Přesný zákres Q100 vs. hranice parcely a kóta podlahy",
+    "Požadavky vodoprávního úřadu pro stavbu v Q100",
+    "Dostupnost hypotečního pojištění nemovitosti v lokalitě",
+    "Aktuální LV"
+  ],
+  "duvodovani": "Na rozdíl od aktivní zóny (case záplava) zde ÚP dává stavební smysl, proto ne odmitnout. Q100 drží riziko na vysoke a blokuje vykupit dokud se neověří podmínky.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "detailní výškové poměry / niveleta"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

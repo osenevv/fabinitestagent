@@ -1,0 +1,89 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Karlštejn",
+    "cislo_parcely": "89/3",
+    "vymera_m2": 3200,
+    "druh_pozemku": "trvalý travní porost",
+    "zpusob_vyuziti": null,
+    "lv": "88"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Louka v EVL Karlštejn—Koda a II. zóně CHKO — stavební výkup nepřipadá v úvahu; zemědělské TTP jen s přísnými limity ochrany.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "zemedelsky",
+    "up_zamer": "plocha přírodní / krajinná zeleň (nezastavitelná)",
+    "poznamka": "LPIS TTP existuje, ale NATURA/CHKO a ÚP blokují stavební i intenzivní rozvoj."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "zadne",
+      "duvod": "Mimo záplavové území dle vstupu.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "vysoke",
+      "duvod": "EVL Karlštejn—Koda + CHKO Český kras II. zóna; stavba vyloučena a i hospodaření na TTP podléhá souhlasu orgánu ochrany přírody. Pro zemědělskou strategii vysoké (ne kritické).",
+      "zdroj": "AOPK MapoMat / NATURA 2000 — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "stredni",
+      "duvod": "Nezastavitelná přírodní plocha; ochrana krajinného rázu omezuje i zemědělské stavby.",
+      "zdroj": "ÚP Karlštejn — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "nizke",
+      "duvod": "Polní cesta — pro zemědělské hospodaření obvykle postačuje.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "neznamo",
+      "duvod": "LV 88 bez informace o zátěžích a vlastnících.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": [
+      {
+        "nazev": "inženýrské sítě",
+        "uroven": "nizke",
+        "duvod": "V místě žádné; pro TTP nepodstatné."
+      }
+    ]
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 6,
+    "rizika": 6,
+    "pravni_stav": 8,
+    "pristup": 16
+  },
+  "skore_zajmu": 36,
+  "doporuceni": "odmitnout",
+  "jistota": {
+    "skore": 88,
+    "duvod": "Ochrana přírody a ÚP jsou ve vstupu jednoznačné; prostor pro jiný výklad je malý."
+  },
+  "overit_rucne": [
+    "Přesný zákres EVL a zóny CHKO vůči hranicím parcely",
+    "Podmínky hospodaření na TTP (dotace, omezení seče) u AOPK",
+    "LV a případná smluvní omezení"
+  ],
+  "duvodovani": "Jediná reálná strategie je zemědělská (TTP), ale EVL + II. zóna CHKO a nezastavitelný ÚP drží výnos i likviditu nízko; pro výkupní logiku Viagem bez smyslu.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "zátěže a vlastníci na LV 88",
+    "podmínky hospodaření stanovené AOPK"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

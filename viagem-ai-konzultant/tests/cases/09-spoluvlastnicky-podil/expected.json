@@ -1,0 +1,21 @@
+{
+  "popis": "Menšinový spoluvlastnický podíl 1/10 + zapsaný pacht — likvidita, ne vykupit.",
+  "kontroly": {
+    "doporuceni": [
+      "zkoumat_dal",
+      "odlozit"
+    ],
+    "nesmi_doporuceni": [
+      "vykupit"
+    ],
+    "hlavni_potencial": [
+      "zemedelsky"
+    ],
+    "vlastnictvi_typ": [
+      "spoluvlastnictvi"
+    ],
+    "rizika_min": {
+      "pravni_stav": "vysoke"
+    }
+  }
+}

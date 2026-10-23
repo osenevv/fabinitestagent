@@ -1,0 +1,22 @@
+{
+  "popis": "Rozporné záplavy = konflikt; ÚP BI na orné = vynětí ze ZPF, NE konflikt.",
+  "kontroly": {
+    "doporuceni": [
+      "zkoumat_dal"
+    ],
+    "skore_zajmu_min": 35,
+    "skore_zajmu_max": 70,
+    "musi_mit_konflikt": true,
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "rizika_in": {
+      "zaplava": [
+        "neznamo"
+      ]
+    },
+    "dalsi_obsahuje": [
+      "ZPF"
+    ]
+  }
+}

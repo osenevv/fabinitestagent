@@ -1,0 +1,36 @@
+{
+  "id": "09-spoluvlastnicky-podil",
+  "_poznamka_testu": "Ručně sestaveno. Nabízen menšinový podíl 1/10 z orné půdy se zapsaným pachtem.",
+  "ku": "Kroměříž",
+  "cislo_parcely": "3102",
+  "vymera_m2": 24000,
+  "druh_pozemku": "orná půda",
+  "zpusob_vyuziti": null,
+  "lv": "1440",
+  "vlastnictvi": "6 spoluvlastníků: 1× podíl 1/2, 5× podíl 1/10. K výkupu nabízen jeden podíl 1/10.",
+  "kn_poznamky": "Pachtovní smlouva zapsána (zemědělské družstvo, do 2031). Bez zástavních práv.",
+  "vizualni_kontext": "Rovinatý půdní blok, příjezd polní cestou.",
+  "uzemni_plan": {
+    "obec": "Kroměříž",
+    "funkcni_plocha": "plocha zemědělská (NZ)",
+    "zdroj": "ÚP Kroměříž — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "mimo Q100",
+    "zdroj": "mapy záplav — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Mimo EVL/PO a ZCHÚ.",
+    "zdroj": "AOPK MapoMat — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": true,
+    "kultura": "orná půda",
+    "poznamka": "Obhospodařováno pachtýřem."
+  },
+  "dalsi": {
+    "pristup": "polní cesta napojená na silnici"
+  }
+}

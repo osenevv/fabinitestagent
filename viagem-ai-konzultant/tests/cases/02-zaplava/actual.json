@@ -1,0 +1,89 @@
+{
+  "parcelni_identifikace": {
+    "ku": "Litoměřice",
+    "cislo_parcely": "456/1",
+    "vymera_m2": 1450,
+    "druh_pozemku": "ostatní plocha",
+    "zpusob_vyuziti": "neplodná půda",
+    "lv": "210"
+  },
+  "vlastnictvi": {
+    "typ": "neznamo",
+    "podil_k_vykupu": null,
+    "pocet_vlastniku": null,
+    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+  },
+  "shrnuti": "Pozemek v aktivní zóně záplavového území s nezastavitelným ÚP — pro výkup se stavebním záměrem nevhodný.",
+  "vyuzitelnost": {
+    "hlavni_potencial": "nevyuzitelny",
+    "up_zamer": "plocha zeleně / nezastavitelná",
+    "poznamka": "ÚP preferuje zeleň a vodohospodářské funkce; stavební využití prakticky vyloučeno záplavami."
+  },
+  "rizika": {
+    "zaplava": {
+      "uroven": "kriticke",
+      "duvod": "Aktivní zóna záplavového území, zároveň Q20 i Q100 — pro stavební výkup disqualifikující.",
+      "zdroj": "mapy záplav — ruční kontrola"
+    },
+    "ochrana_prirody": {
+      "uroven": "nizke",
+      "duvod": "Bez NATURA/ZCHÚ; blízkost toku sama o sobě není ZCHÚ, ale souvisí se záplavami.",
+      "zdroj": "AOPK — ruční kontrola"
+    },
+    "uzemni_plan": {
+      "uroven": "vysoke",
+      "duvod": "Nezastavitelná plocha zeleně omezuje komerční i obytné využití.",
+      "zdroj": "ÚP Litoměřice — ruční výpis pro test"
+    },
+    "pristup": {
+      "uroven": "stredni",
+      "duvod": "Jen nezpevněná cesta.",
+      "zdroj": "dalsi.pristup"
+    },
+    "pravni_stav": {
+      "uroven": "neznamo",
+      "duvod": "LV 210 uvedeno, ale bez informace o zátěžích a vlastnících.",
+      "zdroj": "kn_poznamky"
+    },
+    "dalsi": [
+      {
+        "nazev": "inženýrské sítě",
+        "uroven": "neznamo",
+        "duvod": "Stav sítí ve vstupu neznámý."
+      }
+    ]
+  },
+  "skore_slozky": {
+    "vyuzitelnost": 3,
+    "rizika": 0,
+    "pravni_stav": 8,
+    "pristup": 10
+  },
+  "skore_zajmu": 21,
+  "doporuceni": "odmitnout",
+  "jistota": {
+    "skore": 85,
+    "duvod": "Klíčová rizika (záplavy + ÚP) jsou ve vstupu explicitní a vzájemně se podporují."
+  },
+  "overit_rucne": [
+    "Aktuální zákres aktivní zóny a Q100 na oficiálních mapách",
+    "Zda neexistuje specifický vodohospodářský / kompenzační záměr obce",
+    "LV a případná omezení vlastnictví"
+  ],
+  "duvodovani": "Kombinace aktivní zóny a nezastavitelného ÚP vede k odmítnutí. Skóre je nízké i při jistotě vysoké — data jsou jasná, potenciál není.",
+  "konflikty_dat": [],
+  "chybejici_data": [
+    "stav inženýrských sítí",
+    "zátěže a vlastníci na LV 210"
+  ],
+  "_meta": {
+    "zdroj": "referencni",
+    "poskytovatel": null,
+    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
+    "pokusy": 0,
+    "prompt_sha": "a745b367dc2e0bf4",
+    "normalizace": [],
+    "politika": [],
+    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+  }
+}

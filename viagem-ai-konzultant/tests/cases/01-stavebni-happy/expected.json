@@ -1,0 +1,31 @@
+{
+  "popis": "Happy path: proluka BH v Brně, čistá rizika, přímý přístup.",
+  "kontroly": {
+    "doporuceni": [
+      "vykupit"
+    ],
+    "skore_zajmu_min": 70,
+    "skore_zajmu_max": 95,
+    "jistota_min": 60,
+    "hlavni_potencial": [
+      "stavebni"
+    ],
+    "bez_konfliktu": true,
+    "rizika_in": {
+      "zaplava": [
+        "zadne"
+      ],
+      "ochrana_prirody": [
+        "zadne"
+      ],
+      "pristup": [
+        "zadne",
+        "nizke"
+      ]
+    },
+    "identifikace": {
+      "cislo_parcely": "1234/5",
+      "lv": "4451"
+    }
+  }
+}

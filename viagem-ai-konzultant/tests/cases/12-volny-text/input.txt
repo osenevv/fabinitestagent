@@ -1,0 +1,22 @@
+Informace o pozemku
+Parcelní číslo: 2215/4
+Obec: Kolín [533165]
+Katastrální území: Kolín [665461]
+Číslo LV: 3390
+Výměra [m2]: 1260
+Typ parcely: Parcela katastru nemovitostí
+Mapový list: DKM
+Určení výměry: Ze souřadnic v S-JTSK
+Způsob ochrany nemovitosti: zemědělský půdní fond
+Druh pozemku: orná půda
+
+Vlastníci, jiní oprávnění
+Vlastnické právo                          Podíl
+Testovací Jan, č. p. 12, 28002 Kolín          1/2
+Testovací Marie, č. p. 12, 28002 Kolín        1/2
+
+Omezení vlastnického práva
+Nejsou evidována žádná omezení.
+
+Jiné zápisy
+Nejsou evidovány žádné jiné zápisy.

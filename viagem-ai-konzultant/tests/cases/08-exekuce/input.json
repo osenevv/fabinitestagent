@@ -1,0 +1,36 @@
+{
+  "id": "08-exekuce",
+  "_poznamka_testu": "Ručně sestaveno. Jinak ideální proluka, ale na LV exekuční příkaz k prodeji (blokovaný převod). Testuje bránu nad rizikem mimo plánovací osy.",
+  "ku": "Židenice",
+  "cislo_parcely": "1880/3",
+  "vymera_m2": 640,
+  "druh_pozemku": "zastavěná plocha a nádvoří",
+  "zpusob_vyuziti": "zbořeniště",
+  "lv": "2207",
+  "adresa_orientacni": "ul. Táborská, Brno",
+  "kn_poznamky": "Exekuční příkaz k prodeji nemovitých věcí (soudní exekutor, 2026). Zástavní právo exekutorské. Zástavní právo smluvní ve prospěch banky.",
+  "vizualni_kontext": "Proluka v uliční zástavbě, sítě v ulici.",
+  "uzemni_plan": {
+    "obec": "Brno",
+    "funkcni_plocha": "plocha bydlení (BH)",
+    "regulace": "max. 5 NP",
+    "zdroj": "ÚP města Brna — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "mimo Q100 i aktivní zónu",
+    "zdroj": "mapy záplav ČHMÚ — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Mimo EVL/PO a ZCHÚ.",
+    "zdroj": "AOPK MapoMat — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": false
+  },
+  "dalsi": {
+    "pristup": "veřejná komunikace",
+    "inzenyrske_site": "elektřina, voda, kanalizace v ulici"
+  }
+}
