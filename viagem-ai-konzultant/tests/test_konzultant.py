@@ -171,5 +171,69 @@ class TestChecks(unittest.TestCase):
         self.assertTrue(any("neznámé kontroly" in e for e in errs))
 
 
+class TestSafeCaseId(unittest.TestCase):
+    def test_valid_ids(self) -> None:
+        self.assertEqual(inputs.safe_case_id("01-stavebni-happy"), "01-stavebni-happy")
+        self.assertEqual(inputs.safe_case_id("test_case.1"), "test_case.1")
+
+    def test_invalid_ids_raise_error(self) -> None:
+        with self.assertRaises(inputs.InputError):
+            inputs.safe_case_id("../escape")
+        with self.assertRaises(inputs.InputError):
+            inputs.safe_case_id("")
+        with self.assertRaises(inputs.InputError):
+            inputs.safe_case_id(None)
+
+
+class TestProvidersSchema(unittest.TestCase):
+    def test_provider_schema_stripping(self) -> None:
+        from konzultant import providers
+        sch = inputs.load_schema()
+        stripped = providers.provider_schema(sch)
+        self.assertNotIn("$schema", stripped)
+        self.assertNotIn("$id", stripped)
+        # Kontrola, že stripping neodstraní funkční pole
+        self.assertIn("properties", stripped)
+        self.assertIn("required", stripped)
+
+
+class TestCLIExecution(unittest.TestCase):
+    def test_evaluate_offline_json(self) -> None:
+        import subprocess
+        res = subprocess.run(
+            ["python3", "evaluate.py", "--offline", "tests/cases/01-stavebni-happy/input.json"],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT),
+        )
+        self.assertEqual(res.returncode, 0)
+        data = json.loads(res.stdout)
+        self.assertEqual(data["doporuceni"], "vykupit")
+
+    def test_evaluate_offline_txt(self) -> None:
+        import subprocess
+        res = subprocess.run(
+            ["python3", "evaluate.py", "--offline", "tests/cases/12-volny-text/input.txt"],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT),
+        )
+        self.assertEqual(res.returncode, 0)
+        data = json.loads(res.stdout)
+        self.assertEqual(data["doporuceni"], "zkoumat_dal")
+
+    def test_evaluate_print_prompt(self) -> None:
+        import subprocess
+        res = subprocess.run(
+            ["python3", "evaluate.py", "--print-prompt", "tests/cases/01-stavebni-happy/input.json"],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT),
+        )
+        self.assertEqual(res.returncode, 0)
+        self.assertIn("===== SYSTEM =====", res.stdout)
+        self.assertIn("<parcela_data>", res.stdout)
+
+
 if __name__ == "__main__":
     unittest.main()
