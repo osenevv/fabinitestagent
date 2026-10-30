@@ -1,1 +1,37 @@
-../../tests/cases/06-zemedelsky/input.json
+{
+  "id": "06-zemedelsky",
+  "ku": "Židlochovice",
+  "cislo_parcely": "334",
+  "vymera_m2": 18500,
+  "druh_pozemku": "orná půda",
+  "zpusob_vyuziti": null,
+  "adresa_orientacni": "k.ú. Židlochovice, Jihomoravský kraj",
+  "kn_poznamky": "LV 91. Bez staveb, bez věcných břemen ve výpisu.",
+  "vizualni_kontext": "Velký půdní blok, rovina, příjezd polní cestou od silnice III. třídy.",
+  "uzemni_plan": {
+    "obec": "Židlochovice",
+    "funkcni_plocha": "plocha zemědělská (NZ)",
+    "regulace": "nezastavitelná pro bydlení; přípustné zemědělské stavby dle regulativů",
+    "zdroj": "ÚP Židlochovice — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "mimo Q100",
+    "zdroj": "mapy záplav — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Bez NATURA / ZCHÚ.",
+    "zdroj": "AOPK — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": true,
+    "kultura": "orná půda",
+    "bpej_orientacne": "střední produkční potenciál (orientačně)",
+    "poznamka": "Kompaktní blok, hospodaření možné."
+  },
+  "dalsi": {
+    "pristup": "polní cesta napojená na silnici",
+    "inzenyrske_site": "neřešeno (zemědělské využití)"
+  }
+}

@@ -1,184 +1,63 @@
-# Viagem — AI konzultant parcely (interview úloha)
+# Viagem — AI konzultant parcely
 
-Samostatný balíček pro Viagem a.s.: LLM prompt + robustní Python obal (stdlib only), který z dat o jedné parcele vrátí strukturované vyhodnocení pro rozhodnutí o výkupu.
+Prompt + stdlib runner: data o jedné parcele → JSON vyhodnocení pro výkup.
 
-**Jazyk:** čeština (prompt, výstup, poznámky, kód).  
-**Závislosti:** Python 3.10+ bez jakýchkoli externích pip knihoven (zero-dependency stdlib).  
-**Mimo rozsah:** integrace na ČÚZK API a stahování open dat (dle zadání).
+Čeština. Python 3.10+, bez pip závislostí. Bez integrace na ČÚZK API.
 
-> **Přístup k placenému modelu:** Cloud API klíč (OpenAI / Anthropic / Gemini / xAI) v prostředí odevzdání nebyl. Hard cases (02, 05, 07, 08, 11, 12) mají `actual.json` z **interního LLM agenta** (`_meta.zdroj: live-agent-llm`) přes stejný prompt + schema/policy. Ostatní cases zůstávají referenční (`referencni`). `--eval-live` proti placenému cloud API neběžel; wiring ověřen mock/stub HTTP.
+Cloud API klíč nebyl k dispozici. Hard cases `02, 05, 07, 08, 11, 12` mají `actual.json` ze stejného promptu přes interní LLM + runner (`_meta.zdroj: live-agent-llm`). Ostatní cases jsou `referencni`.
 
----
+## Architektura
 
-## 1. Architektura a principy návrhu
+- **LLM:** úrovně rizik, potenciál, jistota, texty, konflikty.
+- **Kód:** JSON Schema validace, dopočet skóre, strop 35 při `kriticke`, brány pro `vykupit`, 1 opravný tah.
 
-Řešení striktně rozděluje práci mezi dvě domény:
-
-1. **Latentní prostor (LLM úsudek):**
-   - Interpretace plánovacích, přírodních a právních limitů do standardizované taxonomie (`uroven`: `zadne`, `nizke`, `stredni`, `vysoke`, `kriticke`, `neznamo`).
-   - Volba výkupní strategie (`hlavni_potencial`: `stavebni`, `zemedelsky`, `lesni`, `rekreacni`, `infrastrukturni`, `nejisty`, `nevyuzitelny`).
-   - Odhad kvality využitelnosti (`vyuzitelnost`: 0–30 bodů dle lokality a regulativů).
-   - Slovní shrnutí, detekce rozporů (`konflikty_dat`), chybějící údaje a checklist manuální prověrky (`overit_rucne`).
-
-2. **Deterministický prostor (Kód & Politika):**
-   - **Formální validace kontraktu:** Vlastní lehký validátor podmnožiny JSON Schema 2020-12 ([konzultant/schema.py](konzultant/schema.py)) ověřuje typy, enumy, rozsahy i `additionalProperties: false`.
-   - **Výpočet skóre zájmu:** Skóre není stochastický odhad LLM, ale deterministický součet složek. Runner automaticky dopočítává bodové srážky za rizika a při kritickém riziku vynucuje strop 35 bodů ([konzultant/policy.py](konzultant/policy.py)).
-   - **Brány po klasifikaci (ne „ochrana před modelem“):** Doporučení `vykupit` je algoritmicky zakázáno, pokud *už klasifikovaný* výstup obsahuje kritické riziko (včetně `rizika.pravni_stav` a `rizika.dalsi`), neprázdné `konflikty_dat`, jistotu &lt; 60 nebo skóre &lt; 70. Brány **nečtou** parcelní JSON samy — když model špatně označí Q100 jako `nizke` nebo po injekci vyprázdní konflikty, `vykupit` projít může. Spolehlivost na čerstvé parcele tedy stojí primárně na promptu + modelu; brány jen sjednocují konzistenci po klasifikaci.
-   - **Samoopravný cyklus (Auto-repair):** Pokud model vygeneruje nevalidní JSON nebo poruší bránu, runner automaticky provede 1 opravný konverzační tah s výpisem konkrétních chyb.
-
----
-
-## 2. Struktura balíčku
+## Struktura
 
 ```
-viagem-ai-konzultant/
-  README.md
-  requirements.txt            # volitelné (pro dev/test)
-  evaluate.py                 # hlavní CLI runner
-  prompts/
-    system.txt                # finální system prompt (pravidla, taxonomie, brány)
-    user_template.txt         # šablona uživatelské zprávy s oddělením dat
-  schema/
-    vyhodnoceni.schema.json   # formální JSON Schema kontrakt
-  data/parcels/               # demo vstupy pro CLI / pohovor (bez expected/actual)
-  konzultant/                 # aplikační logika (stdlib, feature-oriented)
-    __init__.py
-    domain.py                 # jediný zdroj os rizik, enumů, prahů a srážek
-    schema.py                 # zero-dependency JSON Schema validátor (hranice)
-    policy.py                 # deterministická pravidla skóre a brány (po schématu)
-    inputs.py                 # loader JSON / volného textu a sanitizace
-    pipeline.py               # orchestrace LLM → validace na hranici → politika
-    providers.py              # adaptéry (Claude Code CLI, OpenAI, Anthropic, Gemini, xAI)
-    checks.py                 # prahy expected.json (osami z domain)
-    harness.py                # cases, offline verify recorded, strip `_meta`
-  tests/
-    test_konzultant.py        # unit testy knihovny
-    test_live_http.py         # mock HTTP end-to-end live cesty
-    cases/                    # 12 scénářů: input + expected + actual (ne data/parcels)
-      01-stavebni-happy/      # stavební proluka BH (happy path)
-      02-zaplava/             # aktivní zóna záplavového území
-      03-natura-aopk/         # EVL NATURA 2000 + II. zóna CHKO
-      04-chybici-data/        # neúplný KN vstup bez vrstev
-      05-konflikt-zdroju/     # rozporné záplavy (konflikt) vs ZPF (běžný stav)
-      06-zemedelsky/          # bonitní orná půda NZ
-      07-q100-stavebni/       # Q100 bez aktivní zóny (stavební nuance)
-      08-exekuce/             # exekuční příkaz k prodeji na LV (blokovaný převod)
-      09-spoluvlastnicky-podil/# menšinový podíl 1/10 a zapsaný pacht
-      10-bez-pristupu/        # vnitroblok bez přístupu z veřejné cesty
-      11-prompt-injection/    # pokus o manipulaci promptu v poznámce KN
-      12-volny-text/          # surový textový výpis z KN (kopírováno z webu)
-  notes/
-    iterace.md                # záznam designových a architektonických změn
-    reflexe.md                # zhodnocení limitů a doporučení pro produkci
-  notebooks/
-    vyhodnoceni.ipynb         # Jupyter ukázka (načte prompt ze souborů, offline běh)
+prompts/           system + user šablona
+schema/            vyhodnoceni.schema.json
+konzultant/        domain, schema, policy, pipeline, providers, checks, harness, inputs
+evaluate.py        CLI
+data/parcels/      demo vstupy
+tests/cases/       12× input + expected + actual
+tests/             unit + mock HTTP
+notes/             iterace, reflexe
+notebooks/         offline ukázka
+scripts/           lokální OpenAI stub
 ```
 
----
+## Spuštění
 
-## 3. Jupyter notebook
-
-Ukázkový notebook `notebooks/vyhodnoceni.ipynb` (čeština) projde happy path i záplavový case offline a načte prompt ze souborů `prompts/` (ty zůstávají zdroj pravdy).
-
-```bash
-cd viagem-ai-konzultant
-jupyter notebook notebooks/vyhodnoceni.ipynb
-# nebo otevři stejný soubor ve VS Code / JupyterLab
-```
-
-Bez API klíče notebook používá referenční `actual.json` a to označí.
-
----
-
-## 4. Rychlé spuštění (Quickstart)
-
-### 4.1 Spuštění testovací sady (offline gate testy)
-Nevyžaduje žádný API klíč, trvá pod 1 vteřinu:
 ```bash
 python3 evaluate.py --run-all-tests
-python3 -m unittest tests/test_konzultant.py
-```
+python3 -m unittest tests.test_konzultant tests.test_live_http
 
-### 4.2 Spuštění vyhodnocení parcely
-Skript automaticky detekuje dostupného poskytovatele (lokální Claude Code CLI `claude`, případně env klíče `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `XAI_API_KEY`):
-
-```bash
-# Vyhodnocení konkrétního souboru:
 python3 evaluate.py tests/cases/01-stavebni-happy/input.json
-
-# Zkouška čerstvé parcely ze schránky (volný text z KN):
-pbpaste | python3 evaluate.py -
-
-# Zobrazení sestaveného promptu:
-python3 evaluate.py --print-prompt tests/cases/08-exekuce/input.json
-
-# Offline přehrání uloženého referenčního výstupu:
 python3 evaluate.py --offline tests/cases/01-stavebni-happy/input.json
+python3 evaluate.py --print-prompt tests/cases/08-exekuce/input.json
+pbpaste | python3 evaluate.py -
 ```
 
----
+Poskytovatel: Claude Code CLI, nebo `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `XAI_API_KEY`.
 
-## 5. Zadání čerstvé parcely na pohovoru
-
-Zkoušející může předložit parcelu ve dvou podobách:
-
-### A) Strukturovaný JSON
-Stačí vytvořit JSON s dostupnými údaji (např. `moje_parcela.json`):
-```json
-{
-  "ku": "Královo Pole",
-  "cislo_parcely": "1520/2",
-  "vymera_m2": 1200,
-  "druh_pozemku": "zahrada",
-  "lv": "412",
-  "uzemni_plan": { "funkcni_plocha": "BI" },
-  "dalsi": { "pristup": "místní komunikace" }
-}
-```
-
-### B) Surový text z Nahlížení do KN nebo e-mailu
-Skript i prompt přímo podporují nestrukturovaný text. Stačí zkopírovat výpis z webu ČÚZK do souboru nebo poslat přes stdin:
 ```bash
+python3 evaluate.py --eval-live --save-actual --cases 02-zaplava,08-exekuce
+```
+
+Mock HTTP: `python3 -m unittest tests.test_live_http`.  
+Lokální stub: `scripts/local_openai_stub.py` + `OPENAI_BASE_URL=http://127.0.0.1:8765/v1`.
+
+## Čerstvá parcela
+
+JSON se známými poli, nebo surový text z KN / e-mailu:
+
+```bash
+python3 evaluate.py moje_parcela.json
 python3 evaluate.py vycuc_z_kn.txt
 ```
 
----
-
-## 6. Live path (co je dokázané bez klíče)
-
-Plná cesta `parcel → HTTP provider → extract/coerce JSON → schema → normalize skóre → brány → checks` je pokrytá **mockovanými HTTP unit testy** (`tests/test_live_http.py`): Auth Bearer / Anthropic `x-api-key`, `json_schema`→`json_object` fallback, markdown fence, float→int, content parts, enum repair, přepis ilegálního `vykupit` branou (case 08).
+## Notebook
 
 ```bash
-python3 -m unittest tests.test_live_http -v
+jupyter notebook notebooks/vyhodnoceni.ipynb
 ```
-
-**Lokální end-to-end smoke (bez cloud klíče):** stdlib stub `scripts/local_openai_stub.py` naslouchá na `127.0.0.1:8765` a `evaluate.py --provider openai` s `OPENAI_BASE_URL=http://127.0.0.1:8765/v1` jím projede skutečnou HTTP cestu (včetně přepisu ilegálního `vykupit` u case 08).
-
-**Mock/stub ≠ produkční model.** Unit mocky a lokální stub dokazují wiring runneru. **Nedokazují**, že GPT/Claude dodrží prompt na čerstvé parcele — k tomu je cloud klíč a `--eval-live` proti reálnému API.
-
----
-
-## 7. Provenance `actual.json` (důležité)
-
-**Zelená offline sada ≠ změřený LLM.**
-
-- `actual.json`: hard cases = **`live-agent-llm`** (interní LLM agenta + runner); ostatní = **`referencni`**. Žádný z nich není výstup placeného GPT/Claude/Gemini/xAI API.
-- `python3 evaluate.py --run-all-tests` ověřuje shodu fixtures ↔ expected ↔ schéma/brány. **Neměří**, že produkční model prompt dodrží.
-- `--offline` jen přehrává uložený `actual.json` a na stderr píše, že nejde o model.
-
-### Stav live evaluace v tomto odevzdání
-
-Cloud `--eval-live` neběžel (viz `tests/results/LIVE_EVAL_NOT_RUN.md`); hard cases pokryl interní agent LLM. Live *wiring* je ověřen mock HTTP testy (§6).
-
-### Jak spustit live (až bude klíč)
-
-```bash
-# Tvrdé cases z change-review (nebo celá sada bez --cases):
-python3 evaluate.py --eval-live --cases 02-zaplava,05-konflikt-zdroju,07-q100-stavebni,08-exekuce,11-prompt-injection,12-volny-text \
-  --runs 1 --threshold 0.85
-
-# Celá sada + přepsat actuals reálnými výstupy:
-python3 evaluate.py --eval-live --runs 3 --threshold 0.85 --save-actual
-```
-
-Report se uloží do `tests/results/eval-YYYYMMDD-HHMMSS.json`.

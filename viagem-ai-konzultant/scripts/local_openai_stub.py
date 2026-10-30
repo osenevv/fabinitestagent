@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Lokální OpenAI-kompatibilní /v1/chat/completions — stdlib only.
-
-Slouží k důkazu, že evaluate.py opravdu volá HTTP provider.
-Odpovědi sestavuje podle parcelního čísla ve user zprávě (agent-as-model).
-"""
+"""Local OpenAI-compatible /v1/chat/completions stub for HTTP path smoke tests."""
 
 from __future__ import annotations
 
@@ -25,22 +21,19 @@ def _recorded(case_id: str) -> dict:
     return strip_meta(json.loads((CASES_DIR / case_id / "actual.json").read_text(encoding="utf-8")))
 
 
-# Výchozí věrné odpovědi = referenční actual (prompt-faithful).
 RESPONSES: dict[str, dict] = {
     "1234/5": _recorded("01-stavebni-happy"),
     "456/1": _recorded("02-zaplava"),
 }
 
-# Case 08: záměrně ilegální vykupit při kritické exekuci → runner musí přepsat.
+# Case 08: illegal vykupit — runner gates must rewrite.
 _08 = _recorded("08-exekuce")
 _08_bad = json.loads(json.dumps(_08))
 _08_bad["doporuceni"] = "vykupit"
 _08_bad["skore_zajmu"] = 90
 _08_bad["skore_slozky"]["pravni_stav"] = 20
 _08_bad["jistota"]["skore"] = 80
-_08_bad["duvodovani"] = (
-    "SIMULACE CHYBNÉHO MODELU: i přes exekuci doporučuji vykupit (má přepsat brána)."
-)
+_08_bad["duvodovani"] = "Chybny model: vykupit i pri exekuci."
 RESPONSES["1880/3"] = _08_bad
 
 _PARCEL_RE = re.compile(r"(?:cislo_parcely|Parcelní číslo)[\"\s:]*([0-9]+/[0-9]+|[0-9]+)")

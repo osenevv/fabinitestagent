@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Viagem AI konzultant — CLI: parcela → strukturované vyhodnocení pro výkup.
-
-Logika je v `konzultant/` (pipeline, policy, providers, harness).
-Tento soubor jen skládá argumenty a tiskne výsledek.
-
-Exit kódy: 0 OK · 1 testy/eval neprošly · 2 chyba vstupu/poskytovatele/validace.
-"""
+"""CLI: parcela → JSON vyhodnocení. Exit: 0 OK, 1 test fail, 2 input/provider error."""
 
 from __future__ import annotations
 
@@ -78,20 +72,11 @@ def run_all_tests() -> int:
     print(f"\nHotovo: {len(cases) - failed}/{len(cases)} OK")
     print("Původ actual.json: " + ", ".join(f"{k}={v}" for k, v in sorted(kinds.items())))
     if kinds.get("referencni"):
-        print(
-            "POZOR: 'referencni' = výstup sestavený autorem podle promptu, ne běh modelu."
-        )
+        print("referencni = autor podle promptu, ne live model")
     if kinds.get("live-agent-llm"):
-        print(
-            "POZOR: 'live-agent-llm' = interní LLM agenta + schema/policy, ne placené cloud API."
-        )
-    if kinds.get("referencni") or kinds.get("live-agent-llm"):
-        print("Cloud měření: python3 evaluate.py --eval-live --save-actual (vyžaduje API klíč).")
+        print("live-agent-llm = interní LLM + runner, ne cloud API")
     if stale:
-        print(
-            f"POZOR: {len(stale)} actual.json vznikly pro jinou verzi promptu/schématu "
-            f"(prompt_sha ≠ {current}): {', '.join(stale)}"
-        )
+        print(f"stale prompt_sha ≠ {current}: {', '.join(stale)}")
     return 1 if failed else 0
 
 
@@ -173,10 +158,8 @@ def run_single(args: argparse.Namespace) -> int:
         return 0
     if args.offline:
         case_id = safe_case_id(parcel.get("id"))
-        # Validace na hranici (schema + normalizace + brány) — ne blind replay.
         result_data = load_recorded_actual(case_id)
-        recorded = CASES_DIR / case_id / "actual.json"
-        print(f"Poznámka: offline režim vrací uložený výstup ({recorded}), ne model.", file=sys.stderr)
+        print(f"offline: {CASES_DIR / case_id / 'actual.json'}", file=sys.stderr)
     else:
         provider = select_provider(args.provider, args.model)
         print(f"Model: {provider.name}/{provider.model}", file=sys.stderr)

@@ -1,8 +1,4 @@
-"""Kontroly `expected.json` proti výstupu (prahy, ne golden string).
-
-Neznámý klíč v `kontroly` je chyba — překlep by jinak kontrolu potichu vypnul.
-Osy a pořadí úrovní bereme z `domain.py` (ne duplikát).
-"""
+"""Prahy z `expected.json` vs. výstup. Neznámý klíč v `kontroly` = chyba."""
 
 from __future__ import annotations
 

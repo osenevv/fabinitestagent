@@ -1,12 +1,4 @@
-"""Minimální stdlib validátor podmnožiny JSON Schema 2020-12.
-
-Proč vlastní: balíček se odevzdává jako zip a interviewer ho má spustit bez
-`pip install`. Podporujeme přesně klíčová slova, která používá
-`schema/vyhodnoceni.schema.json`; neznámé klíčové slovo je chyba (ne tiché
-ignorování), aby rozšíření schématu nemohlo projít nevalidované.
-Pokud je nainstalované `jsonschema`, test `test_parity_with_jsonschema`
-ověří shodu výsledků.
-"""
+"""Stdlib JSON Schema 2020-12 subset for vyhodnoceni.schema.json. Unknown keywords error."""
 
 from __future__ import annotations
 

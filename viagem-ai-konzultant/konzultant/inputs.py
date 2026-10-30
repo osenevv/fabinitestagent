@@ -27,11 +27,7 @@ def load_schema() -> dict[str, Any]:
 
 
 def parse_parcel_text(text: str, fallback_id: str | None = None) -> dict[str, Any]:
-    """JSON objekt → dict; cokoliv jiného → `{"volny_text": …}`.
-
-    Volný text je legitimní vstup: interviewer může vložit kopii z Nahlížení
-    do KN nebo e-mail makléře. Prompt ho umí vytěžit (sekce 3).
-    """
+    """JSON → dict; otherwise `{"volny_text": …}`."""
     text = text.strip()
     if not text:
         raise InputError("prázdný vstup")
@@ -78,10 +74,7 @@ def safe_case_id(raw: Any) -> str:
 
 
 def _model_view(parcel: dict[str, Any]) -> dict[str, Any]:
-    """Pole jen pro runner model nevidí: `id` a cokoliv s prefixem `_`
-    (např. `_poznamka_testu`). Nenesou informaci o parcele a název case
-    typu `02-zaplava` nebo poznámka „záměrný konflikt“ by modelu napovídaly
-    očekávanou odpověď — test by pak měřil čtení nápovědy, ne prompt."""
+    """Hide runner fields (`id`, `_…`) from the model."""
     return {k: v for k, v in parcel.items() if k != "id" and not k.startswith("_")}
 
 
@@ -91,8 +84,6 @@ def render_parcel(parcel: dict[str, Any]) -> str:
         body = view["volny_text"]
     else:
         body = json.dumps(view, ensure_ascii=False, indent=2)
-    # Uzavírací značku uvnitř dat neutralizujeme (včetně mezer a velikosti písmen),
-    # aby data nemohla „vyskočit“ z bloku <parcela_data> a tvářit se jako instrukce.
     return re.sub(r"<\s*/\s*parcela_data\s*>", "</parcela_data_>", body, flags=re.IGNORECASE)
 
 

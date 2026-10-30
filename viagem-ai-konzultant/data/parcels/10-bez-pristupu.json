@@ -1,1 +1,34 @@
-../../tests/cases/10-bez-pristupu/input.json
+{
+  "id": "10-bez-pristupu",
+  "ku": "Jihlava",
+  "cislo_parcely": "4410/7",
+  "vymera_m2": 1100,
+  "druh_pozemku": "zahrada",
+  "zpusob_vyuziti": null,
+  "lv": "6120",
+  "kn_poznamky": "Bez věcných břemen ve výpisu.",
+  "vizualni_kontext": "Vnitroblok za řadou rodinných domů, ze všech stran obklopen cizími zahradami.",
+  "uzemni_plan": {
+    "obec": "Jihlava",
+    "funkcni_plocha": "zastavitelná plocha bydlení (BI)",
+    "regulace": "rodinné domy, max. 2 NP",
+    "zdroj": "ÚP Jihlava — ruční výpis pro test"
+  },
+  "zaplavove_uzemi": {
+    "stav": "mimo Q100",
+    "zdroj": "mapy záplav — ruční kontrola"
+  },
+  "ochrana_prirody": {
+    "natura_2000": false,
+    "aopk_zvlaste_chranene": false,
+    "poznamka": "Mimo EVL/PO a ZCHÚ.",
+    "zdroj": "AOPK MapoMat — ruční kontrola"
+  },
+  "lpis": {
+    "v_lpis": false
+  },
+  "dalsi": {
+    "pristup": "Parcela nesousedí s veřejnou komunikací; věcné břemeno cesty v KN nezapsáno.",
+    "inzenyrske_site": "v ulici cca 60 m"
+  }
+}

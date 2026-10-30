@@ -1,12 +1,7 @@
-"""Jediné místo pro doménové konstanty výkupu.
-
-Shotgun surgery dřív: osa rizika se přidávala do policy + checks + (prompt/schema).
-Odtud berou policy i checks stejné osy, úrovně a prahy bran.
-"""
+"""Doménové konstanty výkupu: osy, enumy, srážky, prahy bran."""
 
 from __future__ import annotations
 
-# Pět povinných os rizik (pořadí = pořadí ve schématu / promptu).
 CORE_AXES: tuple[str, ...] = (
     "zaplava",
     "ochrana_prirody",
@@ -17,7 +12,6 @@ CORE_AXES: tuple[str, ...] = (
 PLANNING_AXES: tuple[str, ...] = ("zaplava", "ochrana_prirody", "uzemni_plan")
 
 UROVEN: tuple[str, ...] = ("zadne", "nizke", "stredni", "vysoke", "kriticke", "neznamo")
-# Pro prahy „alespoň X“ — `neznamo` nesplní minimum (není v ORDER).
 UROVEN_ORDER: tuple[str, ...] = ("zadne", "nizke", "stredni", "vysoke", "kriticke")
 
 SAFE_FOR_VYKUPIT: frozenset[str] = frozenset({"zadne", "nizke", "stredni"})
@@ -34,14 +28,13 @@ POTENCIAL: tuple[str, ...] = (
     "nevyuzitelny",
 )
 
-# Srážky za plánovací osy a položky dalsi (kriticke se řeší stropem / nulou zvlášť).
 PLANNING_PENALTY: dict[str, int] = {
     "zadne": 0,
     "nizke": 3,
     "stredni": 8,
     "vysoke": 15,
     "neznamo": 6,
-    "kriticke": 30,  # kdyby se sem dostalo, vynuluje složku rizik
+    "kriticke": 30,
 }
 DALSI_PENALTY: dict[str, int] = {
     "zadne": 0,
@@ -64,7 +57,6 @@ CRITICAL_SCORE_CAP = 35
 VYKUPIT_MIN_SKORE = 70
 VYKUPIT_MIN_JISTOTA = 60
 
-# Poskytovatelé v pořadí auto-fallbacku (po claude-code).
 HTTP_PROVIDER_KEYS: tuple[tuple[str, str], ...] = (
     ("openai", "OPENAI_API_KEY"),
     ("xai", "XAI_API_KEY"),

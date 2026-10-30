@@ -3,7 +3,7 @@
   "poskytovatel": "cursor-agent",
   "model": "composer-internal-llm",
   "prompt_sha": "a745b367dc2e0bf4",
-  "poznamka": "Hard cases: interní LLM agenta + schema/policy. Ne cloud OpenAI/Anthropic.",
+  "poznamka": "Hard cases: interní LLM + schema/policy.",
   "cases": {
     "02-zaplava": {
       "ok": true,

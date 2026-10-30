@@ -12,7 +12,7 @@ from .inputs import build_messages, load_schema, prompt_fingerprint
 from .providers import Provider
 from .schema import validate
 
-MAX_ATTEMPTS = 2  # 1 pokus + 1 oprava s konkrétními chybami
+MAX_ATTEMPTS = 2
 
 
 class EvaluationFailed(Exception):
@@ -56,14 +56,14 @@ def coerce_json_types(obj: Any) -> Any:
 
 
 def validate_at_boundary(data: Any, schema: dict[str, Any]) -> list[str]:
-    """Validace výstupu modelu hned po parsování — ne uvnitř politiky."""
+    """Validate model output right after parse."""
     if not isinstance(data, dict):
         return ["výstup není JSON objekt"]
     return validate(data, schema)
 
 
 def postprocess(data: dict[str, Any]) -> tuple[list[str], list[str]]:
-    """Deterministická normalizace skóre a vynucení bran (in-place)."""
+    """Normalize scores and enforce gates in-place."""
     normalizace = policy.normalize_scores(data)
     politika = policy.enforce_gates(data)
     return normalizace, politika

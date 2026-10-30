@@ -1,14 +1,4 @@
-"""Deterministická vrstva nad výstupem modelu.
-
-Rozdělení práce (latent vs. deterministic):
-- Model dělá úsudek: úrovně rizik, `skore_slozky.vyuzitelnost`, jistotu,
-  doporučení, texty.
-- Tento modul dělá aritmetiku a tvrdá pravidla: dopočet složek skóre,
-  strop při kritickém riziku a brány pro `vykupit`.
-
-Konstanty jsou v `domain.py` (jediný zdroj). Předpoklad volání: data už
-prošla schématem na hranici pipeline / harness.
-"""
+"""Deterministické skóre a brány. Konstanty v `domain.py`. Vstup = schema-validní JSON."""
 
 from __future__ import annotations
 
@@ -27,7 +17,7 @@ from .domain import (
     VYKUPIT_MIN_SKORE,
 )
 
-# Re-export pro testy / volající, kteří dřív sahali na policy.CORE_AXES atd.
+# Re-export used by tests.
 __all__ = [
     "PolicyError",
     "normalize_scores",
@@ -39,12 +29,11 @@ __all__ = [
     "expected_components",
     "expected_total",
     "CRITICAL_SCORE_CAP",
-    "CORE_AXES",
 ]
 
 
 class PolicyError(Exception):
-    """Výstup nemá tvar, na kterém jde spočítat politiku (nemělo projít schématem)."""
+    """Neúplný výstup pro politiku."""
 
 
 def _levels(data: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
@@ -134,7 +123,6 @@ def vykupit_blockers(data: dict[str, Any]) -> list[str]:
 def fallback_recommendation(data: dict[str, Any]) -> str:
     """Konzervativní náhrada za zakázané `vykupit`."""
     core, dalsi = _levels(data)
-    # Kritické plánovací osy + přístup → odmítnout; čistě právní → odložit.
     reject_axes = PLANNING_AXES + ("pristup",)
     if any(core[a] == "kriticke" for a in reject_axes):
         return "odmitnout"

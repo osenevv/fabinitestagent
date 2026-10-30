@@ -1,17 +1,4 @@
-"""Poskytovatelé LLM. Každý implementuje `complete(messages, schema) -> str`.
-
-Výchozí je lokální Claude Code CLI (`claude -p`) — bez API klíče v repu,
-nejlepší dostupný model (`opus`). HTTP poskytovatelé zůstávají pro
-reprodukci u interviewera (OpenAI / xAI / Gemini přes OpenAI-kompatibilní
-endpoint, Anthropic Messages API).
-
-Strukturovaný výstup: schéma se předává nativně (OpenAI `json_schema`
-strict, Anthropic vynucený tool call, Claude Code `--json-schema`).
-Nativní režim je pojistka tvaru; obsahová pravidla stejně ověřuje
-`konzultant.schema` + `konzultant.policy`. Když endpoint `json_schema`
-odmítne (HTTP 400), spadne poskytovatel jednou na `json_object` a zapíše
-to do `notes` — nikdy potichu.
-"""
+"""LLM providers: `complete(messages, schema) -> str`. Claude Code, OpenAI-compat, Anthropic."""
 
 from __future__ import annotations
 
@@ -29,8 +16,7 @@ from .domain import HTTP_PROVIDER_KEYS
 HTTP_TIMEOUT = 180
 CLI_TIMEOUT = 600
 
-# Klíčová slova, která strict režimy poskytovatelů často odmítají. Lokální
-# validátor je vynucuje i tak, takže je z kopie pro poskytovatele vypustíme.
+# Keywords often rejected by provider strict mode; local schema validator still enforces them.
 _PROVIDER_STRIP = {"$schema", "$id", "title", "minimum", "maximum", "minItems", "maxItems", "minLength"}
 
 
@@ -50,8 +36,7 @@ def provider_schema(schema: dict[str, Any]) -> dict[str, Any]:
 
 
 def flatten_messages(messages: list[dict[str, str]]) -> tuple[str, str]:
-    """(system, user) pro rozhraní bez multi-turn (CLI). Opakovaný pokus
-    s předchozí odpovědí a chybami se složí do jedné user zprávy."""
+    """Flatten multi-turn messages to (system, user) for CLI."""
     system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
     parts: list[str] = []
     for m in messages:
@@ -161,8 +146,6 @@ class ClaudeCodeProvider(Provider):
             raise ProviderError(
                 f"Claude Code nevrátil JSON (exit {proc.returncode}): {proc.stdout[:500]} {proc.stderr[:500]}"
             ) from e
-        # Pozor: CLI hlásí `subtype: success` i při chybě účtu („Credit balance
-        # is too low“, „Not logged in“) — rozhoduje `is_error`.
         if envelope.get("is_error") or proc.returncode != 0:
             raise ProviderError(f"Claude Code chyba: {envelope.get('result') or proc.stderr[:500]}")
         structured = envelope.get("structured_output")
@@ -257,7 +240,6 @@ class AnthropicProvider(Provider):
         return text
 
 
-# Výchozí modely = nejsilnější obecně dostupné; vše přepisovatelné env proměnnou.
 DEFAULT_MODELS = {
     "claude-code": "opus",
     "openai": "gpt-4.1",

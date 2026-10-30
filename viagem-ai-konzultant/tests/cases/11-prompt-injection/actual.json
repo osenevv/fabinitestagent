@@ -83,7 +83,7 @@
     ],
     "politika": [],
     "poznamky_poskytovatele": [
-      "Interní LLM agenta (ne cloud API klíč). Stejný prompt+schema+policy jako evaluate.py."
+      "Interní LLM + schema/policy runner"
     ]
   }
 }

@@ -1,7 +1,4 @@
-"""Testovací harness a práce s cases — mimo CLI (`evaluate.py`).
-
-Odděleno od god-file CLI: listing cases, ověření recorded actual, strip `_meta`.
-"""
+"""Test harness: cases, offline verify, strip `_meta`."""
 
 from __future__ import annotations
 
@@ -52,7 +49,7 @@ def load_case_bundle(case_id: str) -> tuple[Path, dict[str, Any], dict[str, Any]
 
 
 def verify_recorded(actual: dict[str, Any], schema: dict[str, Any] | None = None) -> list[str]:
-    """Hranice offline výstupu: schéma + už normalizované skóre + brány."""
+    """Schema + normalized scores + gates for a recorded actual."""
     schema = schema or load_schema()
     body = strip_meta(actual)
     errs = validate(body, schema)
@@ -68,7 +65,7 @@ def verify_recorded(actual: dict[str, Any], schema: dict[str, Any] | None = None
 
 
 def load_recorded_actual(case_id: str) -> dict[str, Any]:
-    """Načte a na hranici ověří `tests/cases/<id>/actual.json`."""
+    """Load and boundary-verify `tests/cases/<id>/actual.json`."""
     recorded = CASES_DIR / case_id / "actual.json"
     if not recorded.is_file():
         raise InputError(f"offline: nenalezen {recorded}; pro novou parcelu spusť bez --offline")
