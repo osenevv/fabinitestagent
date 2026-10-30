@@ -130,7 +130,9 @@ Plná cesta `parcel → HTTP provider → extract/coerce JSON → schema → nor
 python3 -m unittest tests.test_live_http -v
 ```
 
-**Mock ≠ živý model.** Testy dokazují, že runner a providery při zapojení API nespadnou na tvaru odpovědi / chybějícím klíči / HTTP 401. **Nedokazují**, že konkrétní GPT/Claude dodrží prompt na čerstvé parcele — k tomu je potřeba skutečný klíč a `--eval-live`.
+**Lokální end-to-end smoke (bez cloud klíče):** stdlib stub `scripts/local_openai_stub.py` naslouchá na `127.0.0.1:8765` a `evaluate.py --provider openai` s `OPENAI_BASE_URL=http://127.0.0.1:8765/v1` jím projede skutečnou HTTP cestu (včetně přepisu ilegálního `vykupit` u case 08).
+
+**Mock/stub ≠ produkční model.** Unit mocky a lokální stub dokazují wiring runneru. **Nedokazují**, že GPT/Claude dodrží prompt na čerstvé parcele — k tomu je cloud klíč a `--eval-live` proti reálnému API.
 
 ---
 
