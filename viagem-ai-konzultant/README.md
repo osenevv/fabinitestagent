@@ -66,7 +66,11 @@ viagem-ai-konzultant/
   notes/
     iterace.md                # záznam designových a architektonických změn
     reflexe.md                # zhodnocení limitů a doporučení pro produkci
+  notebooks/
+    vyhodnoceni.ipynb         # Jupyter ukázka (načte prompt ze souborů, offline běh)
 ```
+
+Notebook: `jupyter notebook notebooks/vyhodnoceni.ipynb` (nebo VS Code / JupyterLab) z kořene balíčku; prompt nekopíruje — čte `prompts/*.txt`.
 
 ---
 
