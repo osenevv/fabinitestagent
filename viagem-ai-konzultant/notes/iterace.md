@@ -53,3 +53,13 @@ Důkladný audit odhalil zásadní doménové a strukturální slabiny:
   - `11-prompt-injection` (pokus o manipulaci v poznámce)
   - `12-volny-text` (reálný zkopírovaný text z Nahlížení do KN)
 - **Unit test suite:** 16 automatizovaných testů v `tests/test_konzultant.py` běžících pod 0.01 s.
+
+## Iterace 9 — úklid slopu (coupling, hranice, god CLI)
+Audit slop indikátorů: duplicitní osy/srážky, KeyError uvnitř politiky, blind offline replay, CLI jako god-file, pass-through aliasy, rozptýlený fallback poskytovatelů.
+
+**Změny:**
+- `konzultant/domain.py` — jediný zdroj os, enumů, prahů, srážek a `HTTP_PROVIDER_KEYS`.
+- `konzultant/harness.py` — cases + `verify_recorded` / `load_recorded_actual` (schema + normalizace + brány na hranici offline).
+- `pipeline.validate_at_boundary` — validace hned po parsování; `PolicyError` místo holého KeyError.
+- CLI `evaluate.py` zúžen na argparse + tisk; stub/notebook/testy napojené na harness.
+- Parita enumů domain ↔ schema v unit testech; `data/README.md` odděluje demo parcely od cases.
