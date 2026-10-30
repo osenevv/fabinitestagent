@@ -122,7 +122,19 @@ python3 evaluate.py vycuc_z_kn.txt
 
 ---
 
-## 5. Provenance `actual.json` (důležité)
+## 5. Live path (co je dokázané bez klíče)
+
+Plná cesta `parcel → HTTP provider → extract/coerce JSON → schema → normalize skóre → brány → checks` je pokrytá **mockovanými HTTP unit testy** (`tests/test_live_http.py`): Auth Bearer / Anthropic `x-api-key`, `json_schema`→`json_object` fallback, markdown fence, float→int, content parts, enum repair, přepis ilegálního `vykupit` branou (case 08).
+
+```bash
+python3 -m unittest tests.test_live_http -v
+```
+
+**Mock ≠ živý model.** Testy dokazují, že runner a providery při zapojení API nespadnou na tvaru odpovědi / chybějícím klíči / HTTP 401. **Nedokazují**, že konkrétní GPT/Claude dodrží prompt na čerstvé parcele — k tomu je potřeba skutečný klíč a `--eval-live`.
+
+---
+
+## 6. Provenance `actual.json` (důležité)
 
 **Zelená offline sada ≠ změřený LLM.**
 
@@ -132,7 +144,7 @@ python3 evaluate.py vycuc_z_kn.txt
 
 ### Stav live evaluace v tomto odevzdání
 
-V prostředí, kde balíček vznikal, **nebyl dostupný žádný API klíč** (`OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `XAI_API_KEY`) ani použitelný Claude Code CLI pro měření. **Live eval proto neproběhl** — v `tests/results/` není report z reálného modelu. Viz také `notes/reflexe.md`.
+V prostředí odevzdání **nebyl API klíč** — `--eval-live` proti reálnému modelu neběžel (`tests/results/LIVE_EVAL_NOT_RUN.md`). Live *wiring* je ověřen mock HTTP testy (§5).
 
 ### Jak spustit live (až bude klíč)
 

@@ -63,6 +63,21 @@ def flatten_messages(messages: list[dict[str, str]]) -> tuple[str, str]:
 UrlOpen = Callable[..., Any]
 
 
+def message_content_text(content: Any) -> str:
+    """OpenAI-kompatibilní `message.content` může být str nebo seznam partů."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts: list[str] = []
+        for part in content:
+            if isinstance(part, str):
+                parts.append(part)
+            elif isinstance(part, dict) and part.get("type") == "text":
+                parts.append(str(part.get("text") or ""))
+        return "".join(parts)
+    return ""
+
+
 def _post_json(url: str, body: dict[str, Any], headers: dict[str, str], urlopen: UrlOpen) -> dict[str, Any]:
     req = urllib.request.Request(
         url,
@@ -72,23 +87,34 @@ def _post_json(url: str, body: dict[str, Any], headers: dict[str, str], urlopen:
     )
     try:
         with urlopen(req, timeout=HTTP_TIMEOUT) as resp:
-            return json.loads(resp.read().decode("utf-8"))
+            raw = resp.read().decode("utf-8")
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError as e:
+                raise ProviderError(f"odpověď {url} není JSON: {raw[:300]!r}") from e
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", errors="replace")[:2000]
-        raise HttpStatusError(e.code, detail) from e
+        raise HttpStatusError(e.code, detail, url=url) from e
     except urllib.error.URLError as e:
         raise ProviderError(f"síťová chyba {url}: {e.reason}") from e
     except TimeoutError as e:
         raise ProviderError(f"timeout {HTTP_TIMEOUT}s: {url}") from e
-    except json.JSONDecodeError as e:
-        raise ProviderError(f"odpověď {url} není JSON") from e
 
 
 class HttpStatusError(ProviderError):
-    def __init__(self, code: int, detail: str) -> None:
-        super().__init__(f"HTTP {code}: {detail}")
+    def __init__(self, code: int, detail: str, url: str = "") -> None:
+        where = f" ({url})" if url else ""
+        hint = ""
+        if code in (401, 403):
+            hint = " — klíč je nastavený, ale API ho odmítlo (neplatný/expirovaný klíč nebo oprávnění)"
+        elif code == 429:
+            hint = " — rate limit / kvóta; zkus později nebo jiný model"
+        elif code >= 500:
+            hint = " — výpadek služby poskytovatele"
+        super().__init__(f"HTTP {code}{where}{hint}: {detail}")
         self.code = code
         self.detail = detail
+        self.url = url
 
 
 class Provider:
@@ -180,11 +206,15 @@ class OpenAICompatProvider(Provider):
             self.notes.append(f"{self.name}: json_schema odmítnuto (HTTP 400), fallback na json_object")
             payload = _post_json(url, self._body(messages, schema), headers, self._urlopen)
         try:
-            content = payload["choices"][0]["message"]["content"]
+            message = payload["choices"][0]["message"]
         except (KeyError, IndexError, TypeError) as e:
             raise ProviderError(f"neočekávaný tvar odpovědi {self.name}: {str(payload)[:500]}") from e
-        if not isinstance(content, str) or not content.strip():
-            raise ProviderError(f"{self.name} vrátil prázdný obsah")
+        refusal = message.get("refusal") if isinstance(message, dict) else None
+        if refusal:
+            raise ProviderError(f"{self.name} odmítl požadavek (refusal): {refusal}")
+        content = message_content_text(message.get("content") if isinstance(message, dict) else None)
+        if not content.strip():
+            raise ProviderError(f"{self.name} vrátil prázdný obsah: {str(payload)[:500]}")
         return content
 
 
@@ -261,9 +291,13 @@ def select_provider(name: str | None = None, model: str | None = None) -> Provid
         return model or env.get(env_var) or DEFAULT_MODELS[name]
 
     def key(var: str) -> str:
-        if not env.get(var):
-            raise ProviderError(f"poskytovatel {name} vyžaduje {var}")
-        return env[var]
+        val = (env.get(var) or "").strip()
+        if not val:
+            raise ProviderError(
+                f"poskytovatel {name!r} vyžaduje neprázdný {var}. "
+                f"Bez klíče nelze volat API — nastav env nebo použij --offline / --run-all-tests."
+            )
+        return val
 
     if name == "claude-code":
         return ClaudeCodeProvider(model=pick("CLAUDE_CODE_MODEL"))

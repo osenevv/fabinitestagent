@@ -24,10 +24,14 @@ class EvaluationFailed(Exception):
 
 
 def extract_json(text: str) -> Any:
-    """Tolerantní parsování: holý JSON, ```json blok, nebo text kolem objektu."""
+    """Tolerantní parsování: holý JSON, ```json / ```JSON blok, nebo text kolem objektu."""
     text = text.strip()
     if text.startswith("```"):
-        lines = text.splitlines()[1:]
+        lines = text.splitlines()
+        # první řádek = fence (+ volitelný language tag)
+        lines = lines[1:]
+        while lines and lines[-1].strip() == "":
+            lines = lines[:-1]
         if lines and lines[-1].strip().startswith("```"):
             lines = lines[:-1]
         text = "\n".join(lines).strip()
@@ -38,6 +42,20 @@ def extract_json(text: str) -> Any:
         if start != -1 and end > start:
             return json.loads(text[start : end + 1])
         raise
+
+
+def coerce_json_types(obj: Any) -> Any:
+    """LLM často vrátí 88.0 místo 88 — schema chce integer. Float s celočíselnou
+    hodnotou převedeme; bool necháváme (není číslo skóre)."""
+    if isinstance(obj, bool):
+        return obj
+    if isinstance(obj, float) and obj.is_integer() and abs(obj) <= 2**53:
+        return int(obj)
+    if isinstance(obj, dict):
+        return {k: coerce_json_types(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [coerce_json_types(v) for v in obj]
+    return obj
 
 
 def check_output(data: Any, schema: dict[str, Any]) -> list[str]:
@@ -78,7 +96,7 @@ def evaluate(parcel: dict[str, Any], provider: Provider) -> Result:
     for attempt in range(1, MAX_ATTEMPTS + 1):
         raw = provider.complete(messages, schema)
         try:
-            data = extract_json(raw)
+            data = coerce_json_types(extract_json(raw))
         except json.JSONDecodeError as e:
             errors = [f"výstup není validní JSON ({e.msg}, řádek {e.lineno})"]
         else:
