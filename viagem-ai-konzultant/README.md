@@ -164,7 +164,7 @@ python3 -m unittest tests.test_live_http -v
 
 ### Stav live evaluace v tomto odevzdání
 
-V prostředí odevzdání **nebyl API klíč** — `--eval-live` proti reálnému modelu neběžel (`tests/results/LIVE_EVAL_NOT_RUN.md`). Live *wiring* je ověřen mock HTTP testy (§5).
+V prostředí odevzdání **nebyl API klíč** — `--eval-live` proti reálnému modelu neběžel (`tests/results/LIVE_EVAL_NOT_RUN.md`). Live *wiring* je ověřen mock HTTP testy (§6).
 
 ### Jak spustit live (až bude klíč)
 
