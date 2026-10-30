@@ -70,20 +70,32 @@ viagem-ai-konzultant/
     vyhodnoceni.ipynb         # Jupyter ukázka (načte prompt ze souborů, offline běh)
 ```
 
-Notebook: `jupyter notebook notebooks/vyhodnoceni.ipynb` (nebo VS Code / JupyterLab) z kořene balíčku; prompt nekopíruje — čte `prompts/*.txt`.
+---
+
+## 3. Jupyter notebook
+
+Ukázkový notebook `notebooks/vyhodnoceni.ipynb` (čeština) projde happy path i záplavový case offline a načte prompt ze souborů `prompts/` (ty zůstávají zdroj pravdy).
+
+```bash
+cd viagem-ai-konzultant
+jupyter notebook notebooks/vyhodnoceni.ipynb
+# nebo otevři stejný soubor ve VS Code / JupyterLab
+```
+
+Bez API klíče notebook používá referenční `actual.json` a to označí.
 
 ---
 
-## 3. Rychlé spuštění (Quickstart)
+## 4. Rychlé spuštění (Quickstart)
 
-### 3.1 Spuštění testovací sady (offline gate testy)
+### 4.1 Spuštění testovací sady (offline gate testy)
 Nevyžaduje žádný API klíč, trvá pod 1 vteřinu:
 ```bash
 python3 evaluate.py --run-all-tests
 python3 -m unittest tests/test_konzultant.py
 ```
 
-### 3.2 Spuštění vyhodnocení parcely
+### 4.2 Spuštění vyhodnocení parcely
 Skript automaticky detekuje dostupného poskytovatele (lokální Claude Code CLI `claude`, případně env klíče `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `XAI_API_KEY`):
 
 ```bash
@@ -102,7 +114,7 @@ python3 evaluate.py --offline tests/cases/01-stavebni-happy/input.json
 
 ---
 
-## 4. Zadání čerstvé parcely na pohovoru
+## 5. Zadání čerstvé parcely na pohovoru
 
 Zkoušející může předložit parcelu ve dvou podobách:
 
@@ -128,7 +140,7 @@ python3 evaluate.py vycuc_z_kn.txt
 
 ---
 
-## 5. Live path (co je dokázané bez klíče)
+## 6. Live path (co je dokázané bez klíče)
 
 Plná cesta `parcel → HTTP provider → extract/coerce JSON → schema → normalize skóre → brány → checks` je pokrytá **mockovanými HTTP unit testy** (`tests/test_live_http.py`): Auth Bearer / Anthropic `x-api-key`, `json_schema`→`json_object` fallback, markdown fence, float→int, content parts, enum repair, přepis ilegálního `vykupit` branou (case 08).
 
@@ -142,7 +154,7 @@ python3 -m unittest tests.test_live_http -v
 
 ---
 
-## 6. Provenance `actual.json` (důležité)
+## 7. Provenance `actual.json` (důležité)
 
 **Zelená offline sada ≠ změřený LLM.**
 
