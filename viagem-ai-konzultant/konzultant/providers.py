@@ -24,6 +24,8 @@ import urllib.error
 import urllib.request
 from typing import Any, Callable
 
+from .domain import HTTP_PROVIDER_KEYS
+
 HTTP_TIMEOUT = 180
 CLI_TIMEOUT = 600
 
@@ -274,15 +276,14 @@ def select_provider(name: str | None = None, model: str | None = None) -> Provid
         if shutil.which("claude"):
             name = "claude-code"
         else:
-            for cand, key in (("openai", "OPENAI_API_KEY"), ("xai", "XAI_API_KEY"),
-                              ("gemini", "GEMINI_API_KEY"), ("anthropic", "ANTHROPIC_API_KEY")):
+            for cand, key in HTTP_PROVIDER_KEYS:
                 if env.get(key):
                     name = cand
                     break
     if name is None:
+        keys = " / ".join(k for _, k in HTTP_PROVIDER_KEYS)
         raise ProviderError(
-            "Není dostupný žádný model: nainstaluj Claude Code (`claude`) nebo nastav "
-            "OPENAI_API_KEY / XAI_API_KEY / GEMINI_API_KEY / ANTHROPIC_API_KEY."
+            f"Není dostupný žádný model: nainstaluj Claude Code (`claude`) nebo nastav {keys}."
         )
     if name not in DEFAULT_MODELS:
         raise ProviderError(f"neznámý poskytovatel {name!r}; volby: {', '.join(PROVIDERS)}")

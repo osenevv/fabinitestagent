@@ -12,6 +12,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 PROMPTS = ROOT / "prompts"
 SCHEMA_PATH = ROOT / "schema" / "vyhodnoceni.schema.json"
+PARCELS_DIR = ROOT / "data" / "parcels"
 
 MAX_INPUT_CHARS = 40_000  # ochrana před omylem vloženým celým PDF / LV se stovkami parcel
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
@@ -59,6 +60,14 @@ def load_parcel(source: str) -> dict[str, Any]:
         raise InputError(f"soubor neexistuje: {path}")
     fallback = path.parent.name if path.stem == "input" else path.stem
     return parse_parcel_text(path.read_text(encoding="utf-8"), fallback_id=fallback)
+
+
+def load_demo_parcel(case_id: str) -> dict[str, Any]:
+    """Demo vstup z `data/parcels/<id>.json` (ne z tests/cases — ty mají expected/actual)."""
+    path = PARCELS_DIR / f"{case_id}.json"
+    if not path.is_file():
+        raise InputError(f"demo parcela nenalezena: {path}")
+    return load_parcel(str(path))
 
 
 def safe_case_id(raw: Any) -> str:

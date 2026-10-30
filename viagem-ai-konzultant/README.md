@@ -40,17 +40,21 @@ viagem-ai-konzultant/
     user_template.txt         # šablona uživatelské zprávy s oddělením dat
   schema/
     vyhodnoceni.schema.json   # formální JSON Schema kontrakt
-  konzultant/                 # aplikační logika (stdlib)
+  data/parcels/               # demo vstupy pro CLI / pohovor (bez expected/actual)
+  konzultant/                 # aplikační logika (stdlib, feature-oriented)
     __init__.py
-    schema.py                 # zero-dependency JSON Schema validátor
-    policy.py                 # deterministická pravidla skóre a bezpečnostní brány
+    domain.py                 # jediný zdroj os rizik, enumů, prahů a srážek
+    schema.py                 # zero-dependency JSON Schema validátor (hranice)
+    policy.py                 # deterministická pravidla skóre a brány (po schématu)
     inputs.py                 # loader JSON / volného textu a sanitizace
-    pipeline.py               # orchestrace LLM volání a opravného cyklu
+    pipeline.py               # orchestrace LLM → validace na hranici → politika
     providers.py              # adaptéry (Claude Code CLI, OpenAI, Anthropic, Gemini, xAI)
-    checks.py                 # ověřování testovacích prahů expected.json
+    checks.py                 # prahy expected.json (osami z domain)
+    harness.py                # cases, offline verify recorded, strip `_meta`
   tests/
-    test_konzultant.py        # unit testy knihovny (16 testů, <0.01s)
-    cases/                    # 12 testovacích scénářů (vstup, očekávání, výstup)
+    test_konzultant.py        # unit testy knihovny
+    test_live_http.py         # mock HTTP end-to-end live cesty
+    cases/                    # 12 scénářů: input + expected + actual (ne data/parcels)
       01-stavebni-happy/      # stavební proluka BH (happy path)
       02-zaplava/             # aktivní zóna záplavového území
       03-natura-aopk/         # EVL NATURA 2000 + II. zóna CHKO

@@ -3,36 +3,59 @@
 Rozdělení práce (latent vs. deterministic):
 - Model dělá úsudek: úrovně rizik, `skore_slozky.vyuzitelnost`, jistotu,
   doporučení, texty.
-- Tento modul dělá aritmetiku a tvrdá pravidla, která jsou z definice
-  jednoznačná: dopočet složek skóre z úrovní rizik, strop při kritickém
-  riziku a brány pro `vykupit`.
+- Tento modul dělá aritmetiku a tvrdá pravidla: dopočet složek skóre,
+  strop při kritickém riziku a brány pro `vykupit`.
 
-Prompt obsahuje tatáž pravidla, aby fungoval i samostatně (vložený do
-chatu bez runneru). Runner pak rozdíly NEskrývá: každá úprava je
-zapsaná v `_meta.normalizace` / `_meta.politika`.
+Konstanty jsou v `domain.py` (jediný zdroj). Předpoklad volání: data už
+prošla schématem na hranici pipeline / harness.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-CORE_AXES = ("zaplava", "ochrana_prirody", "uzemni_plan", "pristup", "pravni_stav")
-PLANNING_AXES = ("zaplava", "ochrana_prirody", "uzemni_plan")
-SAFE_LEVELS = {"zadne", "nizke", "stredni"}
+from .domain import (
+    AXIS_POINTS,
+    BLOCKING_DALSI,
+    CORE_AXES,
+    CRITICAL_SCORE_CAP,
+    DALSI_PENALTY,
+    PLANNING_AXES,
+    PLANNING_PENALTY,
+    SAFE_FOR_VYKUPIT,
+    VYKUPIT_MIN_JISTOTA,
+    VYKUPIT_MIN_SKORE,
+)
 
-PLANNING_PENALTY = {"zadne": 0, "nizke": 3, "stredni": 8, "vysoke": 15, "neznamo": 6}
-DALSI_PENALTY = {"zadne": 0, "nizke": 1, "stredni": 3, "vysoke": 6, "neznamo": 2}
-AXIS_POINTS = {"zadne": 20, "nizke": 16, "stredni": 10, "vysoke": 5, "neznamo": 8, "kriticke": 0}
+# Re-export pro testy / volající, kteří dřív sahali na policy.CORE_AXES atd.
+__all__ = [
+    "PolicyError",
+    "normalize_scores",
+    "vykupit_blockers",
+    "fallback_recommendation",
+    "gate_violations",
+    "enforce_gates",
+    "has_critical",
+    "expected_components",
+    "expected_total",
+    "CRITICAL_SCORE_CAP",
+    "CORE_AXES",
+]
 
-CRITICAL_SCORE_CAP = 35
-VYKUPIT_MIN_SKORE = 70
-VYKUPIT_MIN_JISTOTA = 60
+
+class PolicyError(Exception):
+    """Výstup nemá tvar, na kterém jde spočítat politiku (nemělo projít schématem)."""
 
 
 def _levels(data: dict[str, Any]) -> tuple[dict[str, str], list[str]]:
-    rizika = data["rizika"]
-    core = {axis: rizika[axis]["uroven"] for axis in CORE_AXES}
-    dalsi = [item["uroven"] for item in rizika["dalsi"]]
+    try:
+        rizika = data["rizika"]
+        core = {axis: rizika[axis]["uroven"] for axis in CORE_AXES}
+        dalsi = [item["uroven"] for item in rizika["dalsi"]]
+    except (KeyError, TypeError) as e:
+        raise PolicyError(
+            f"neúplný výstup pro politiku (očekáváno schema-validní JSON): {e}"
+        ) from e
     return core, dalsi
 
 
@@ -42,7 +65,7 @@ def has_critical(data: dict[str, Any]) -> bool:
 
 
 def expected_components(data: dict[str, Any]) -> dict[str, int]:
-    """Složky skóre, které jsou čistou funkcí úrovní rizik (vše kromě vyuzitelnost)."""
+    """Složky skóre, které jsou čistou funkcí úrovní rizik (kromě vyuzitelnost)."""
     core, dalsi = _levels(data)
     planning = [core[a] for a in PLANNING_AXES]
     if "kriticke" in planning or "kriticke" in dalsi:
@@ -66,20 +89,19 @@ def expected_total(data: dict[str, Any], components: dict[str, int]) -> int:
 
 
 def normalize_scores(data: dict[str, Any]) -> list[str]:
-    """Přepočítá deterministické složky a `skore_zajmu` in-place.
-
-    Vrací seznam změn (prázdný = model počítal správně). Předpokládá
-    výstup, který už prošel schématem.
-    """
+    """Přepočítá deterministické složky a `skore_zajmu` in-place."""
     changes: list[str] = []
-    slozky = data["skore_slozky"]
+    try:
+        slozky = data["skore_slozky"]
+    except KeyError as e:
+        raise PolicyError("chybí skore_slozky") from e
     for key, want in expected_components(data).items():
-        if slozky[key] != want:
-            changes.append(f"skore_slozky.{key}: {slozky[key]} → {want}")
+        if slozky.get(key) != want:
+            changes.append(f"skore_slozky.{key}: {slozky.get(key)} → {want}")
             slozky[key] = want
     total = expected_total(data, slozky)
-    if data["skore_zajmu"] != total:
-        changes.append(f"skore_zajmu: {data['skore_zajmu']} → {total}")
+    if data.get("skore_zajmu") != total:
+        changes.append(f"skore_zajmu: {data.get('skore_zajmu')} → {total}")
         data["skore_zajmu"] = total
     return changes
 
@@ -87,30 +109,34 @@ def normalize_scores(data: dict[str, Any]) -> list[str]:
 def vykupit_blockers(data: dict[str, Any]) -> list[str]:
     """Důvody, proč `vykupit` není dovoleno (prázdný seznam = dovoleno)."""
     blockers: list[str] = []
-    if data["skore_zajmu"] < VYKUPIT_MIN_SKORE:
-        blockers.append(f"skore_zajmu {data['skore_zajmu']} < {VYKUPIT_MIN_SKORE}")
-    if data["jistota"]["skore"] < VYKUPIT_MIN_JISTOTA:
-        blockers.append(f"jistota {data['jistota']['skore']} < {VYKUPIT_MIN_JISTOTA}")
-    if data["konflikty_dat"]:
+    skore = data.get("skore_zajmu")
+    if not isinstance(skore, int) or skore < VYKUPIT_MIN_SKORE:
+        blockers.append(f"skore_zajmu {skore} < {VYKUPIT_MIN_SKORE}")
+    try:
+        jistota = data["jistota"]["skore"]
+    except (KeyError, TypeError):
+        blockers.append("chybí jistota.skore")
+        jistota = -1
+    if not isinstance(jistota, int) or jistota < VYKUPIT_MIN_JISTOTA:
+        blockers.append(f"jistota {jistota} < {VYKUPIT_MIN_JISTOTA}")
+    if data.get("konflikty_dat"):
         blockers.append("neprázdné konflikty_dat")
     core, _ = _levels(data)
     for axis, lvl in core.items():
-        if lvl not in SAFE_LEVELS:
+        if lvl not in SAFE_FOR_VYKUPIT:
             blockers.append(f"rizika.{axis} = {lvl}")
     for item in data["rizika"]["dalsi"]:
-        if item["uroven"] in {"vysoke", "kriticke"}:
-            blockers.append(f"rizika.dalsi '{item['nazev']}' = {item['uroven']}")
+        if item.get("uroven") in BLOCKING_DALSI:
+            blockers.append(f"rizika.dalsi '{item.get('nazev')}' = {item.get('uroven')}")
     return blockers
 
 
 def fallback_recommendation(data: dict[str, Any]) -> str:
-    """Konzervativní náhrada za zakázané `vykupit`.
-
-    Kritické plánovací/fyzické riziko → odmitnout; kritický právní stav
-    (blokovaný převod) → odlozit; jinak → zkoumat_dal.
-    """
+    """Konzervativní náhrada za zakázané `vykupit`."""
     core, dalsi = _levels(data)
-    if any(core[a] == "kriticke" for a in ("zaplava", "ochrana_prirody", "uzemni_plan", "pristup")):
+    # Kritické plánovací osy + přístup → odmítnout; čistě právní → odložit.
+    reject_axes = PLANNING_AXES + ("pristup",)
+    if any(core[a] == "kriticke" for a in reject_axes):
         return "odmitnout"
     if core["pravni_stav"] == "kriticke" or "kriticke" in dalsi:
         return "odlozit"
@@ -118,7 +144,7 @@ def fallback_recommendation(data: dict[str, Any]) -> str:
 
 
 def gate_violations(data: dict[str, Any]) -> list[str]:
-    if data["doporuceni"] != "vykupit":
+    if data.get("doporuceni") != "vykupit":
         return []
     return [f"brána vykupit: {b}" for b in vykupit_blockers(data)]
 

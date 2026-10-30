@@ -6,7 +6,7 @@ import json
 import unittest
 from pathlib import Path
 
-from konzultant import checks, inputs, pipeline, policy, schema
+from konzultant import checks, domain, harness, inputs, pipeline, policy, schema
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -195,6 +195,50 @@ class TestProvidersSchema(unittest.TestCase):
         # Kontrola, že stripping neodstraní funkční pole
         self.assertIn("properties", stripped)
         self.assertIn("required", stripped)
+
+
+class TestDomainSchemaParity(unittest.TestCase):
+    """Enumy v domain.py musí sedět se schématem — jinak shotgun při změně osy."""
+
+    def test_enums_match_schema(self) -> None:
+        sch = inputs.load_schema()
+        defs = sch["$defs"]
+        self.assertEqual(tuple(defs["uroven"]["enum"]), domain.UROVEN)
+        self.assertEqual(tuple(sch["properties"]["doporuceni"]["enum"]), domain.DOPORUCENI)
+        pot = sch["properties"]["vyuzitelnost"]["properties"]["hlavni_potencial"]["enum"]
+        self.assertEqual(tuple(pot), domain.POTENCIAL)
+
+    def test_penalty_maps_cover_all_levels(self) -> None:
+        for lvl in domain.UROVEN:
+            self.assertIn(lvl, domain.PLANNING_PENALTY)
+            self.assertIn(lvl, domain.DALSI_PENALTY)
+            self.assertIn(lvl, domain.AXIS_POINTS)
+
+
+class TestHarnessBoundary(unittest.TestCase):
+    def test_verify_recorded_happy(self) -> None:
+        actual = json.loads(
+            (ROOT / "tests/cases/01-stavebni-happy/actual.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(harness.verify_recorded(actual), [])
+
+    def test_load_recorded_rejects_gate_break(self) -> None:
+        # Dočasně nepoužíváme soubor — ověříme verify_recorded přímo.
+        actual = json.loads(
+            (ROOT / "tests/cases/08-exekuce/actual.json").read_text(encoding="utf-8")
+        )
+        body = harness.strip_meta(actual)
+        body["doporuceni"] = "vykupit"
+        errs = harness.verify_recorded(body)
+        self.assertTrue(any("brána vykupit" in e for e in errs))
+
+    def test_load_demo_parcel(self) -> None:
+        parcel = inputs.load_demo_parcel("01-stavebni-happy")
+        self.assertIn("cislo_parcely", parcel)
+
+    def test_policy_error_on_incomplete(self) -> None:
+        with self.assertRaises(policy.PolicyError):
+            policy.normalize_scores({"skore_slozky": {}})
 
 
 class TestCLIExecution(unittest.TestCase):

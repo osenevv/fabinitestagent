@@ -1,28 +1,31 @@
 """Kontroly `expected.json` proti výstupu (prahy, ne golden string).
 
-Neznámý klíč v `kontroly` je chyba — překlep (např. `zaplava_mni`) by jinak
-kontrolu potichu vypnul a test by zeleně procházel bez ověření.
+Neznámý klíč v `kontroly` je chyba — překlep by jinak kontrolu potichu vypnul.
+Osy a pořadí úrovní bereme z `domain.py` (ne duplikát).
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-ORDER = ["zadne", "nizke", "stredni", "vysoke", "kriticke"]
-AXES = ("zaplava", "ochrana_prirody", "uzemni_plan", "pristup", "pravni_stav")
+from .domain import CORE_AXES, UROVEN_ORDER
 
 KNOWN = {
-    "doporuceni",          # list povolených
-    "nesmi_doporuceni",    # list zakázaných
-    "skore_zajmu_min", "skore_zajmu_max",
-    "jistota_min", "jistota_max",
-    "hlavni_potencial",    # list povolených
-    "rizika_min",          # {osa: úroveň}; `neznamo` min NESPLŇUJE
-    "rizika_in",           # {osa: [úrovně]}
-    "dalsi_obsahuje",      # list podřetězců, každý musí být v nějakém rizika.dalsi[].nazev (case-insensitive)
-    "musi_mit_konflikt", "musi_mit_chybejici", "bez_konfliktu",
-    "vlastnictvi_typ",     # list povolených
-    "identifikace",        # {pole: hodnota} přesná shoda v parcelni_identifikace
+    "doporuceni",
+    "nesmi_doporuceni",
+    "skore_zajmu_min",
+    "skore_zajmu_max",
+    "jistota_min",
+    "jistota_max",
+    "hlavni_potencial",
+    "rizika_min",
+    "rizika_in",
+    "dalsi_obsahuje",
+    "musi_mit_konflikt",
+    "musi_mit_chybejici",
+    "bez_konfliktu",
+    "vlastnictvi_typ",
+    "identifikace",
 }
 
 
@@ -56,13 +59,13 @@ def run_checks(checks: dict[str, Any], actual: dict[str, Any]) -> list[str]:
             errs.append(f"hlavni_potencial={got} mimo {checks['hlavni_potencial']}")
     for axis, want in (checks.get("rizika_min") or {}).items():
         got = _risk(actual, axis)
-        if axis not in AXES or want not in ORDER:
+        if axis not in CORE_AXES or want not in UROVEN_ORDER:
             errs.append(f"rizika_min: neplatná osa/úroveň {axis}={want}")
-        elif got not in ORDER or ORDER.index(got) < ORDER.index(want):
+        elif got not in UROVEN_ORDER or UROVEN_ORDER.index(got) < UROVEN_ORDER.index(want):
             errs.append(f"rizika.{axis}={got} < požadované min {want}")
     for axis, allowed in (checks.get("rizika_in") or {}).items():
         got = _risk(actual, axis)
-        if axis not in AXES:
+        if axis not in CORE_AXES:
             errs.append(f"rizika_in: neplatná osa {axis}")
         elif got not in allowed:
             errs.append(f"rizika.{axis}={got} mimo povolené {allowed}")

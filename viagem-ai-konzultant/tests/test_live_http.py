@@ -16,6 +16,7 @@ from unittest import mock
 
 from konzultant import pipeline, providers
 from konzultant.checks import run_checks
+from konzultant.harness import load_case_bundle
 from konzultant.inputs import load_parcel, load_schema
 from konzultant.providers import (
     AnthropicProvider,
@@ -26,19 +27,11 @@ from konzultant.providers import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-CASES = ROOT / "tests" / "cases"
 
 
 def _load_case(case_id: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    case_dir = CASES / case_id
-    inp = case_dir / "input.json"
-    if not inp.exists():
-        inp = case_dir / "input.txt"
-    parcel = load_parcel(str(inp))
-    expected = json.loads((case_dir / "expected.json").read_text(encoding="utf-8"))
-    actual = json.loads((case_dir / "actual.json").read_text(encoding="utf-8"))
-    actual.pop("_meta", None)
-    return parcel, expected, actual
+    inp, expected, actual = load_case_bundle(case_id)
+    return load_parcel(str(inp)), expected, actual
 
 
 class _FakeHTTPResponse:

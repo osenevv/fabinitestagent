@@ -9,28 +9,30 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CASES = ROOT / "tests" / "cases"
+sys.path.insert(0, str(ROOT))
+
+from konzultant.harness import CASES_DIR, strip_meta  # noqa: E402
+
 HOST, PORT = "127.0.0.1", 8765
 
 
-def _strip_meta(path: Path) -> dict:
-    data = json.loads(path.read_text(encoding="utf-8"))
-    data.pop("_meta", None)
-    return data
+def _recorded(case_id: str) -> dict:
+    return strip_meta(json.loads((CASES_DIR / case_id / "actual.json").read_text(encoding="utf-8")))
 
 
 # Výchozí věrné odpovědi = referenční actual (prompt-faithful).
 RESPONSES: dict[str, dict] = {
-    "1234/5": _strip_meta(CASES / "01-stavebni-happy" / "actual.json"),
-    "456/1": _strip_meta(CASES / "02-zaplava" / "actual.json"),
+    "1234/5": _recorded("01-stavebni-happy"),
+    "456/1": _recorded("02-zaplava"),
 }
 
 # Case 08: záměrně ilegální vykupit při kritické exekuci → runner musí přepsat.
-_08 = _strip_meta(CASES / "08-exekuce" / "actual.json")
+_08 = _recorded("08-exekuce")
 _08_bad = json.loads(json.dumps(_08))
 _08_bad["doporuceni"] = "vykupit"
 _08_bad["skore_zajmu"] = 90
@@ -49,7 +51,6 @@ def pick_response(messages: list[dict]) -> dict:
     for needle, payload in RESPONSES.items():
         if needle in blob:
             return payload
-    # fallback: zkus regex
     m = _PARCEL_RE.search(blob)
     if m and m.group(1) in RESPONSES:
         return RESPONSES[m.group(1)]

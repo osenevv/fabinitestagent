@@ -1,4 +1,4 @@
-"""Pipeline: parcela → model → parsování → validace → (1× oprava) → normalizace → brány."""
+"""Pipeline: parcela → model → parsování → validace na hranici → (1× oprava) → politika."""
 
 from __future__ import annotations
 
@@ -27,9 +27,7 @@ def extract_json(text: str) -> Any:
     """Tolerantní parsování: holý JSON, ```json / ```JSON blok, nebo text kolem objektu."""
     text = text.strip()
     if text.startswith("```"):
-        lines = text.splitlines()
-        # první řádek = fence (+ volitelný language tag)
-        lines = lines[1:]
+        lines = text.splitlines()[1:]
         while lines and lines[-1].strip() == "":
             lines = lines[:-1]
         if lines and lines[-1].strip().startswith("```"):
@@ -45,8 +43,7 @@ def extract_json(text: str) -> Any:
 
 
 def coerce_json_types(obj: Any) -> Any:
-    """LLM často vrátí 88.0 místo 88 — schema chce integer. Float s celočíselnou
-    hodnotou převedeme; bool necháváme (není číslo skóre)."""
+    """LLM často vrátí 88.0 místo 88 — schema chce integer."""
     if isinstance(obj, bool):
         return obj
     if isinstance(obj, float) and obj.is_integer() and abs(obj) <= 2**53:
@@ -58,11 +55,18 @@ def coerce_json_types(obj: Any) -> Any:
     return obj
 
 
-def check_output(data: Any, schema: dict[str, Any]) -> list[str]:
-    """Strukturní chyby: schéma. (Skóre a brány řeší normalizace/politika.)"""
+def validate_at_boundary(data: Any, schema: dict[str, Any]) -> list[str]:
+    """Validace výstupu modelu hned po parsování — ne uvnitř politiky."""
     if not isinstance(data, dict):
         return ["výstup není JSON objekt"]
     return validate(data, schema)
+
+
+def postprocess(data: dict[str, Any]) -> tuple[list[str], list[str]]:
+    """Deterministická normalizace skóre a vynucení bran (in-place)."""
+    normalizace = policy.normalize_scores(data)
+    politika = policy.enforce_gates(data)
+    return normalizace, politika
 
 
 @dataclass
@@ -80,19 +84,12 @@ def _feedback(errors: list[str]) -> str:
     )
 
 
-def postprocess(data: dict[str, Any]) -> tuple[list[str], list[str]]:
-    """Deterministická normalizace skóre a vynucení bran (in-place)."""
-    normalizace = policy.normalize_scores(data)
-    politika = policy.enforce_gates(data)
-    return normalizace, politika
-
-
 def evaluate(parcel: dict[str, Any], provider: Provider) -> Result:
     schema = load_schema()
     messages = build_messages(parcel)
     raw = ""
     errors: list[str] = []
-    last_valid: tuple[dict[str, Any], int] | None = None  # schématicky validní, jen porušená brána
+    last_valid: tuple[dict[str, Any], int] | None = None
     for attempt in range(1, MAX_ATTEMPTS + 1):
         raw = provider.complete(messages, schema)
         try:
@@ -100,24 +97,24 @@ def evaluate(parcel: dict[str, Any], provider: Provider) -> Result:
         except json.JSONDecodeError as e:
             errors = [f"výstup není validní JSON ({e.msg}, řádek {e.lineno})"]
         else:
-            errors = check_output(data, schema)
+            errors = validate_at_boundary(data, schema)
             if not errors:
-                # Brány hlídáme už tady: model dostane šanci doporučení
-                # opravit sám, než ho přepíše deterministická politika.
                 probe = json.loads(json.dumps(data))
-                policy.normalize_scores(probe)
-                errors = policy.gate_violations(probe)
-                if not errors:
-                    normalizace, politika = postprocess(data)
-                    return Result(data, attempt, normalizace, politika)
-                last_valid = (data, attempt)
+                try:
+                    policy.normalize_scores(probe)
+                    errors = policy.gate_violations(probe)
+                except policy.PolicyError as e:
+                    errors = [str(e)]
+                else:
+                    if not errors:
+                        normalizace, politika = postprocess(data)
+                        return Result(data, attempt, normalizace, politika)
+                    last_valid = (data, attempt)
         messages = messages + [
             {"role": "assistant", "content": raw},
             {"role": "user", "content": _feedback(errors)},
         ]
     if last_valid is not None:
-        # Tvar je v pořádku, jen doporučení porušuje bránu → deterministická
-        # politika ho přepíše a zapíše proč. Lepší než zahodit celý výstup.
         data, _ = last_valid
         normalizace, politika = postprocess(data)
         return Result(data, MAX_ATTEMPTS, normalizace, politika)
