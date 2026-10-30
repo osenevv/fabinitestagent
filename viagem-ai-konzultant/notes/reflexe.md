@@ -22,8 +22,8 @@
 - **Automatizovaný noční eval (CI/CD):**
   - Pravidelný běh `--eval-live` nad sadou 50+ reálných parcel v CI/CD pipeline sledující drift kvality nově vydaných verzí modelů.
 
-## Live eval
-V prostředí odevzdání **neproběhl** živý běh modelu (`--eval-live`): chyběl API klíč. Offline `actual.json` zůstávají referenční (`_meta.zdroj: referencni`). Až bude klíč, je potřeba spustit aspoň tvrdé cases (02, 05, 07, 08, 11, 12) a uložit report do `tests/results/`.
+## Live eval / placený model
+**Nemám přístup k placenému modelu v prostředí odevzdání** (žádný `OPENAI_API_KEY` / Anthropic / Gemini / xAI). Proto `--eval-live` proti cloud API **neproběhl** a `actual.json` zůstávají referenční (`_meta.zdroj: referencni`) — dle zadání „dej vědět“, pokud není placený model. Až bude klíč, spustit aspoň tvrdé cases (02, 05, 07, 08, 11, 12) a uložit report do `tests/results/`.
 
 ## Rozsah práce
 Čas v rámci zadání (orientačně 4–8 h) zahrnul i **architektonický redesign** nad první verzí promptu — schéma, deterministickou politiku skóre/brán, validátor, multi-provider runner, auto-repair a rozšíření na 12 cases — ne jen ladění jednoho system promptu. Live měření modelu do toho rozsahu nepatří (nebylo API).

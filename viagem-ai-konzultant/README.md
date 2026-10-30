@@ -6,6 +6,8 @@ Samostatný balíček pro Viagem a.s.: LLM prompt + robustní Python obal (stdli
 **Závislosti:** Python 3.10+ bez jakýchkoli externích pip knihoven (zero-dependency stdlib).  
 **Mimo rozsah:** integrace na ČÚZK API a stahování open dat (dle zadání).
 
+> **Přístup k placenému modelu:** Nemám / neměli jsme v prostředí odevzdání přístup k placenému API (OpenAI / Anthropic / Gemini / xAI). Soubory `tests/cases/*/actual.json` jsou proto **referenční** (`_meta.zdroj: referencni`), ne výstup live modelu. Live zapojení runneru je ověřené mock/stub HTTP; `--eval-live` proti cloud API neběžel.
+
 ---
 
 ## 1. Architektura a principy návrhu
