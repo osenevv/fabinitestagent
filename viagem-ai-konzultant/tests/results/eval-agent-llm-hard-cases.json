@@ -1,0 +1,52 @@
+{
+  "cas": "2026-10-30T21:54:34+00:00",
+  "poskytovatel": "cursor-agent",
+  "model": "composer-internal-llm",
+  "prompt_sha": "a745b367dc2e0bf4",
+  "poznamka": "Hard cases: interní LLM agenta + schema/policy. Ne cloud OpenAI/Anthropic.",
+  "cases": {
+    "02-zaplava": {
+      "ok": true,
+      "doporuceni": "odmitnout",
+      "skore": 22,
+      "jistota": 82,
+      "meta_zdroj": "live-agent-llm"
+    },
+    "05-konflikt-zdroju": {
+      "ok": true,
+      "doporuceni": "zkoumat_dal",
+      "skore": 68,
+      "jistota": 48,
+      "meta_zdroj": "live-agent-llm"
+    },
+    "07-q100-stavebni": {
+      "ok": true,
+      "doporuceni": "zkoumat_dal",
+      "skore": 69,
+      "jistota": 72,
+      "meta_zdroj": "live-agent-llm"
+    },
+    "08-exekuce": {
+      "ok": true,
+      "doporuceni": "odlozit",
+      "skore": 35,
+      "jistota": 78,
+      "meta_zdroj": "live-agent-llm"
+    },
+    "11-prompt-injection": {
+      "ok": true,
+      "doporuceni": "zkoumat_dal",
+      "skore": 92,
+      "jistota": 55,
+      "meta_zdroj": "live-agent-llm"
+    },
+    "12-volny-text": {
+      "ok": true,
+      "doporuceni": "zkoumat_dal",
+      "skore": 36,
+      "jistota": 35,
+      "meta_zdroj": "live-agent-llm"
+    }
+  },
+  "pass_rate": 1.0
+}

@@ -1,9 +1,15 @@
-# Live eval — neproběhl (chybí placený model)
+# Live eval — cloud API neběžel; hard cases přes interní LLM
 
-**Nemám přístup k placenému modelu** v tomto prostředí: nebyly nastavené `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY` / `XAI_API_KEY` (ani použitelný Claude Code CLI pro cloud měření).
+**Placené cloud API** (OpenAI / Anthropic / Gemini / xAI) v prostředí odevzdání **nebylo** — klíč byl jen lokální stub (`sk-loca…` → `127.0.0.1:8765`), `api.openai.com` vrátil 401.
 
-Proto zde **není** soubor `eval-*.json` z `python3 evaluate.py --eval-live` proti reálnému API.
+## Co proběhlo místo toho
 
-`tests/cases/*/actual.json` mají `_meta.zdroj: referencni` (autor podle finálního promptu).
+Hard cases **02, 05, 07, 08, 11, 12** byly vyhodnoceny **interním LLM Cloud Agentu** nad stejným `prompts/system.txt` + user šablonou, výstup prošel stejným `schema` + `policy` runnerem jako `evaluate.py`.
 
-Jak spustit až bude klíč: viz README §6 / §5.
+- `_meta.zdroj: live-agent-llm`
+- `_meta.poskytovatel: cursor-agent`
+- report: `tests/results/eval-agent-llm-*.json`
+
+Ostatní cases zůstávají `_meta.zdroj: referencni` (autor podle promptu).
+
+Až bude cloud klíč: `python3 evaluate.py --eval-live --save-actual --provider openai` (bez stub `OPENAI_BASE_URL`).

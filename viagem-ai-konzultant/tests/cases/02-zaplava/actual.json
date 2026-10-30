@@ -11,79 +11,81 @@
     "typ": "neznamo",
     "podil_k_vykupu": null,
     "pocet_vlastniku": null,
-    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+    "poznamka": "LV 210 zmíněno v kn_poznamky; struktura vlastníků neuvedena."
   },
-  "shrnuti": "Pozemek v aktivní zóně záplavového území s nezastavitelným ÚP — pro výkup se stavebním záměrem nevhodný.",
+  "shrnuti": "Pozemek u Labe v aktivní zóně záplav a na nezastavitelné ploše zeleně — pro stavební výkup prakticky nevyužitelný.",
   "vyuzitelnost": {
     "hlavni_potencial": "nevyuzitelny",
     "up_zamer": "plocha zeleně / nezastavitelná",
-    "poznamka": "ÚP preferuje zeleň a vodohospodářské funkce; stavební využití prakticky vyloučeno záplavami."
+    "poznamka": "ÚP preferuje zeleň a vodohospodářské funkce; stavební činnost omezena."
   },
   "rizika": {
     "zaplava": {
       "uroven": "kriticke",
-      "duvod": "Aktivní zóna záplavového území, zároveň Q20 i Q100 — pro stavební výkup disqualifikující.",
+      "duvod": "Aktivní zóna záplavového území, zároveň v Q20 i Q100.",
       "zdroj": "mapy záplav — ruční kontrola"
     },
     "ochrana_prirody": {
-      "uroven": "nizke",
-      "duvod": "Bez NATURA/ZCHÚ; blízkost toku sama o sobě není ZCHÚ, ale souvisí se záplavami.",
+      "uroven": "zadne",
+      "duvod": "Bez NATURA 2000 a bez ZCHÚ; blízkost toku sama o sobě není ZCHÚ.",
       "zdroj": "AOPK — ruční kontrola"
     },
     "uzemni_plan": {
-      "uroven": "vysoke",
-      "duvod": "Nezastavitelná plocha zeleně omezuje komerční i obytné využití.",
+      "uroven": "kriticke",
+      "duvod": "Nezastavitelná plocha zeleně při jakémkoli stavebním záměru.",
       "zdroj": "ÚP Litoměřice — ruční výpis pro test"
     },
     "pristup": {
       "uroven": "stredni",
-      "duvod": "Jen nezpevněná cesta.",
+      "duvod": "Pouze nezpevněná cesta; pro stavební záměr podstatné omezení.",
       "zdroj": "dalsi.pristup"
     },
     "pravni_stav": {
       "uroven": "neznamo",
-      "duvod": "LV 210 uvedeno, ale bez informace o zátěžích a vlastnících.",
+      "duvod": "LV 210 bez zástavby, ale výpis zátěží a vlastnická struktura chybí.",
       "zdroj": "kn_poznamky"
     },
     "dalsi": [
       {
         "nazev": "inženýrské sítě",
         "uroven": "neznamo",
-        "duvod": "Stav sítí ve vstupu neznámý."
+        "duvod": "Ve vstupu uvedeno jako neznámé."
       }
     ]
   },
   "skore_slozky": {
-    "vyuzitelnost": 3,
+    "vyuzitelnost": 4,
     "rizika": 0,
     "pravni_stav": 8,
     "pristup": 10
   },
-  "skore_zajmu": 21,
+  "skore_zajmu": 22,
   "doporuceni": "odmitnout",
   "jistota": {
-    "skore": 85,
-    "duvod": "Klíčová rizika (záplavy + ÚP) jsou ve vstupu explicitní a vzájemně se podporují."
+    "skore": 82,
+    "duvod": "Záplavy i ÚP jsou ve vstupu explicitní; nejistota hlavně u LV a sítí."
   },
   "overit_rucne": [
-    "Aktuální zákres aktivní zóny a Q100 na oficiálních mapách",
-    "Zda neexistuje specifický vodohospodářský / kompenzační záměr obce",
-    "LV a případná omezení vlastnictví"
+    "Aktuální zákres aktivní zóny / Q100 na DIBAVOD či ČHMÚ pro p. č. 456/1 k.ú. Litoměřice",
+    "Kompletní výpis LV 210 (vlastníci, věcná břemena)"
   ],
-  "duvodovani": "Kombinace aktivní zóny a nezastavitelného ÚP vede k odmítnutí. Skóre je nízké i při jistotě vysoké — data jsou jasná, potenciál není.",
+  "duvodovani": "Kritická aktivní zóna a nezastavitelný ÚP vylučují stavební výkup; skóre stropováno kritickými riziky. Doporučení odmitnout.",
   "konflikty_dat": [],
   "chybejici_data": [
-    "stav inženýrských sítí",
-    "zátěže a vlastníci na LV 210"
+    "vlastnická struktura LV",
+    "inženýrské sítě"
   ],
   "_meta": {
-    "zdroj": "referencni",
-    "poskytovatel": null,
-    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
-    "pokusy": 0,
+    "zdroj": "live-agent-llm",
+    "poskytovatel": "cursor-agent",
+    "model": "composer-internal-llm",
+    "pokusy": 1,
     "prompt_sha": "a745b367dc2e0bf4",
+    "cas": "2026-10-30T21:53:17+00:00",
     "normalizace": [],
     "politika": [],
-    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+    "poznamky_poskytovatele": [
+      "Interní LLM agenta (ne cloud API klíč). Stejný prompt+schema+policy jako evaluate.py."
+    ]
   }
 }

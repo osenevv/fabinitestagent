@@ -9,81 +9,91 @@
   },
   "vlastnictvi": {
     "typ": "spoluvlastnictvi",
-    "podil_k_vykupu": null,
+    "podil_k_vykupu": "1/2",
     "pocet_vlastniku": 2,
-    "poznamka": "Dva spoluvlastníci po 1/2; nabízený podíl neuveden."
+    "poznamka": "Testovací Jan 1/2, Testovací Marie 1/2 dle výpisu."
   },
-  "shrnuti": "Orná parcela 1 260 m² v k. ú. Kolín, dva spoluvlastníci po 1/2, LV bez omezení; ÚP, záplavy ani ochrana přírody ve výpisu nejsou — o výkupu nelze rozhodnout.",
+  "shrnuti": "Orná v ZPF, spoluvlastnictví 1/2+1/2; ÚP/záplavy/ochrana ve volném textu chybí — bez dalších vrstev jen zkoumat dál, ne vykupit.",
   "vyuzitelnost": {
-    "hlavni_potencial": "nejisty",
+    "hlavni_potencial": "zemedelsky",
     "up_zamer": null,
-    "poznamka": "Orná v ZPF; bez ÚP nelze určit stavební ani zemědělskou strategii."
+    "poznamka": "Text uvádí ornou a ochranu ZPF; ÚP chybí, takže stavební strategii nelze odvodit."
   },
   "rizika": {
     "zaplava": {
       "uroven": "neznamo",
-      "duvod": "Výpis z KN záplavy neobsahuje.",
+      "duvod": "Volný text záplavy nezmiňuje.",
       "zdroj": null
     },
     "ochrana_prirody": {
       "uroven": "neznamo",
-      "duvod": "Výpis z KN ochranu přírody neobsahuje.",
+      "duvod": "Volný text ZCHÚ/NATURA nezmiňuje (jen ZPF).",
       "zdroj": null
     },
     "uzemni_plan": {
       "uroven": "neznamo",
-      "duvod": "Územní plán ve výpisu není.",
+      "duvod": "ÚP ve výpisu chybí.",
       "zdroj": null
     },
     "pristup": {
       "uroven": "neznamo",
-      "duvod": "Přístup ve výpisu není.",
+      "duvod": "Přístup z textu nevyplývá.",
       "zdroj": null
     },
     "pravni_stav": {
-      "uroven": "nizke",
-      "duvod": "Bez omezení vlastnického práva a jiných zápisů; výkup celku vyžaduje souhlas obou spoluvlastníků.",
-      "zdroj": "výpis z Nahlížení do KN"
+      "uroven": "vysoke",
+      "duvod": "Spoluvlastnický podíl 1/2 k výkupu — likvidita a souhlas druhého vlastníka; omezení vlastnického práva text uvádí jako žádná.",
+      "zdroj": "volny_text"
     },
-    "dalsi": []
+    "dalsi": [
+      {
+        "nazev": "ZPF",
+        "uroven": "stredni",
+        "duvod": "Způsob ochrany: zemědělský půdní fond."
+      }
+    ]
   },
   "skore_slozky": {
-    "vyuzitelnost": 8,
-    "rizika": 12,
-    "pravni_stav": 16,
+    "vyuzitelnost": 14,
+    "rizika": 9,
+    "pravni_stav": 5,
     "pristup": 8
   },
-  "skore_zajmu": 44,
+  "skore_zajmu": 36,
   "doporuceni": "zkoumat_dal",
   "jistota": {
-    "skore": 30,
-    "duvod": "Jen KN výpis (volný text); žádná plánovací ani riziková vrstva."
+    "skore": 35,
+    "duvod": "Vstup je volný text z KN; chybí ÚP, záplavy, ochrana přírody, přístup — strop jistoty 60, zde níže."
   },
   "overit_rucne": [
-    "Územní plán města Kolína pro p. č. 2215/4",
-    "Záplavové mapy ČHMÚ / DIBAVOD pro p. č. 2215/4",
-    "AOPK MapoMat — NATURA 2000 a ZCHÚ",
-    "Katastrální mapa / mapy.cz — přístup z veřejné komunikace",
-    "Zda oba spoluvlastníci prodávají celek"
+    "Územní plán obce Kolín pro p. č. 2215/4",
+    "Záplavové mapy ČHMÚ/DIBAVOD",
+    "AOPK MapoMat — ZCHÚ/NATURA",
+    "Přístup z veřejné komunikace / VB cesty"
   ],
-  "duvodovani": "Identifikace a vlastnictví jsou z výpisu jasné, rizikové vrstvy chybí úplně → nízká jistota, brána blokuje vykupit. Doplnit vrstvy dle overit_rucne.",
+  "duvodovani": "Identifikace a spoluvlastnictví vytěženy; bez plánovacích vrstev nelze vykupit. Pravni_stav vysoke (podíl) + neznamo osy → zkoumat_dal.",
   "konflikty_dat": [],
   "chybejici_data": [
-    "územní plán",
-    "záplavové území",
-    "ochrana přírody",
-    "LPIS",
-    "přístup",
-    "tržní cena"
+    "uzemni_plan",
+    "zaplavove_uzemi",
+    "ochrana_prirody",
+    "pristup",
+    "vizualni_kontext"
   ],
   "_meta": {
-    "zdroj": "referencni",
-    "poskytovatel": null,
-    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
-    "pokusy": 0,
+    "zdroj": "live-agent-llm",
+    "poskytovatel": "cursor-agent",
+    "model": "composer-internal-llm",
+    "pokusy": 1,
     "prompt_sha": "a745b367dc2e0bf4",
-    "normalizace": [],
+    "cas": "2026-10-30T21:53:17+00:00",
+    "normalizace": [
+      "skore_slozky.rizika: 3 → 9",
+      "skore_zajmu: 30 → 36"
+    ],
     "politika": [],
-    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+    "poznamky_poskytovatele": [
+      "Interní LLM agenta (ne cloud API klíč). Stejný prompt+schema+policy jako evaluate.py."
+    ]
   }
 }

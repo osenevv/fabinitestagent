@@ -79,9 +79,14 @@ def run_all_tests() -> int:
     print("Původ actual.json: " + ", ".join(f"{k}={v}" for k, v in sorted(kinds.items())))
     if kinds.get("referencni"):
         print(
-            "POZOR: 'referencni' = výstup sestavený autorem podle promptu, ne běh modelu. "
-            "Živé měření: python3 evaluate.py --eval-live --save-actual"
+            "POZOR: 'referencni' = výstup sestavený autorem podle promptu, ne běh modelu."
         )
+    if kinds.get("live-agent-llm"):
+        print(
+            "POZOR: 'live-agent-llm' = interní LLM agenta + schema/policy, ne placené cloud API."
+        )
+    if kinds.get("referencni") or kinds.get("live-agent-llm"):
+        print("Cloud měření: python3 evaluate.py --eval-live --save-actual (vyžaduje API klíč).")
     if stale:
         print(
             f"POZOR: {len(stale)} actual.json vznikly pro jinou verzi promptu/schématu "

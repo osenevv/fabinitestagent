@@ -6,7 +6,7 @@ Samostatný balíček pro Viagem a.s.: LLM prompt + robustní Python obal (stdli
 **Závislosti:** Python 3.10+ bez jakýchkoli externích pip knihoven (zero-dependency stdlib).  
 **Mimo rozsah:** integrace na ČÚZK API a stahování open dat (dle zadání).
 
-> **Přístup k placenému modelu:** Nemám / neměli jsme v prostředí odevzdání přístup k placenému API (OpenAI / Anthropic / Gemini / xAI). Soubory `tests/cases/*/actual.json` jsou proto **referenční** (`_meta.zdroj: referencni`), ne výstup live modelu. Live zapojení runneru je ověřené mock/stub HTTP; `--eval-live` proti cloud API neběžel.
+> **Přístup k placenému modelu:** Cloud API klíč (OpenAI / Anthropic / Gemini / xAI) v prostředí odevzdání nebyl. Hard cases (02, 05, 07, 08, 11, 12) mají `actual.json` z **interního LLM agenta** (`_meta.zdroj: live-agent-llm`) přes stejný prompt + schema/policy. Ostatní cases zůstávají referenční (`referencni`). `--eval-live` proti placenému cloud API neběžel; wiring ověřen mock/stub HTTP.
 
 ---
 
@@ -162,13 +162,13 @@ python3 -m unittest tests.test_live_http -v
 
 **Zelená offline sada ≠ změřený LLM.**
 
-- Soubory `tests/cases/*/actual.json` jsou **referenční výstupy autora** sestavené podle finálního promptu a politiky (`_meta.zdroj: referencni`). **Nejsou** výsledkem live běhu GPT/Claude/Gemini/xAI.
+- `actual.json`: hard cases = **`live-agent-llm`** (interní LLM agenta + runner); ostatní = **`referencni`**. Žádný z nich není výstup placeného GPT/Claude/Gemini/xAI API.
 - `python3 evaluate.py --run-all-tests` ověřuje shodu fixtures ↔ expected ↔ schéma/brány. **Neměří**, že produkční model prompt dodrží.
 - `--offline` jen přehrává uložený `actual.json` a na stderr píše, že nejde o model.
 
 ### Stav live evaluace v tomto odevzdání
 
-V prostředí odevzdání **nebyl API klíč** — `--eval-live` proti reálnému modelu neběžel (`tests/results/LIVE_EVAL_NOT_RUN.md`). Live *wiring* je ověřen mock HTTP testy (§6).
+Cloud `--eval-live` neběžel (viz `tests/results/LIVE_EVAL_NOT_RUN.md`); hard cases pokryl interní agent LLM. Live *wiring* je ověřen mock HTTP testy (§6).
 
 ### Jak spustit live (až bude klíč)
 

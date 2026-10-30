@@ -11,45 +11,45 @@
     "typ": "neznamo",
     "podil_k_vykupu": null,
     "pocet_vlastniku": null,
-    "poznamka": "Vlastnická struktura ve vstupu neuvedena."
+    "poznamka": "LV 556 zmíněno; podíly neuvedeny."
   },
-  "shrnuti": "Pole na okraji zástavby v zastavitelné ploše BI — typický stavební greenfield před vynětím ze ZPF; záplavy si odporují, proto výkup až po jednoznačném zákresu Q100.",
+  "shrnuti": "Zastavitelná BI na orné v LPIS — běžný stav před vynětím ze ZPF; záplavy jsou mezi dvěma kontrolami v konfliktu, proto nejprve ověřit vodu.",
   "vyuzitelnost": {
     "hlavni_potencial": "stavebni",
-    "up_zamer": "zastavitelná plocha bydlení (BI), max. 2 NP",
-    "poznamka": "Orná v KN/LPIS + BI v ÚP není rozpor dat, ale běžný stav před vynětím ze ZPF."
+    "up_zamer": "zastavitelná plocha bydlení (BI)",
+    "poznamka": "ÚP umožňuje RD max. 2 NP; KN/LPIS orná není konflikt vůči BI, ale vynětí ze ZPF bude nutné."
   },
   "rizika": {
     "zaplava": {
       "uroven": "neznamo",
-      "duvod": "Konflikt: analytik A = mimo Q100, analytik B = částečně v Q100.",
+      "duvod": "Analytik A: mimo Q100; analytik B: částečně v Q100 — neslučitelná tvrzení o téže vrstvě.",
       "zdroj": "konflikt dvou ručních kontrol — test"
     },
     "ochrana_prirody": {
       "uroven": "zadne",
-      "duvod": "Bez NATURA a ZCHÚ dle vstupu.",
+      "duvod": "Bez ZCHÚ / NATURA.",
       "zdroj": "AOPK — ruční kontrola"
     },
     "uzemni_plan": {
       "uroven": "nizke",
-      "duvod": "Zastavitelná plocha BI odpovídá stavebnímu záměru; ověřit podmínky využití plochy.",
+      "duvod": "Zastavitelná BI odpovídá stavebnímu potenciálu; regulace standardní.",
       "zdroj": "ÚP Hradec Králové — ruční výpis A pro test"
     },
     "pristup": {
       "uroven": "zadne",
       "duvod": "Přístup z místní komunikace.",
-      "zdroj": "dalsi.pristup"
+      "zdroj": "dalsi.pristup / vizualni_kontext"
     },
     "pravni_stav": {
       "uroven": "neznamo",
-      "duvod": "LV 556 bez informace o zátěžích; možný zemědělský pacht neověřen.",
+      "duvod": "LV 556 bez detailu zátěží a vlastnické struktury.",
       "zdroj": "kn_poznamky"
     },
     "dalsi": [
       {
         "nazev": "vynětí ze ZPF",
         "uroven": "stredni",
-        "duvod": "Orná půda v BI vyžaduje souhlas s vynětím a odvody; třída ochrany neuvedena."
+        "duvod": "Orná v LPIS na zastavitelné BI — běžný stav, nutný proces vynětí ze ZPF."
       }
     ]
   },
@@ -62,32 +62,33 @@
   "skore_zajmu": 68,
   "doporuceni": "zkoumat_dal",
   "jistota": {
-    "skore": 45,
-    "duvod": "ÚP a přístup jasné; záplavy rozporné a právní stav neznámý."
+    "skore": 48,
+    "duvod": "Konflikt záplav snižuje jistotu; LV neúplné."
   },
   "overit_rucne": [
-    "Oficiální zákres Q100 (ČHMÚ / DIBAVOD) vůči hranici parcely 2012/8",
-    "Třída ochrany ZPF dle BPEJ a výše odvodů za vynětí",
-    "Aktuální LV 556 — pacht, zátěže, vlastníci",
-    "Podmínky využití plochy BI v ÚP Hradec Králové (etapizace, územní studie)"
+    "Jednoznačný zákres Q100/aktivní zóny (DIBAVOD/ČHMÚ) pro p. č. 2012/8",
+    "Třída ochrany ZPF / BPEJ a postup vynětí",
+    "Výpis LV 556"
   ],
-  "duvodovani": "Stavební potenciál (BI, přístup) je reálný; rozporné záplavy jsou konflikt dat, který bránou blokuje vykupit. Rozdíl KN/LPIS vs ÚP jsem nehodnotil jako konflikt — jde o vynětí ze ZPF.",
+  "duvodovani": "Stavební potenciál z ÚP je, ale konflikt záplav blokuje vykupit (neprázdné konflikty_dat) a jistota je pod 60 → zkoumat_dal.",
   "konflikty_dat": [
-    "Záplavy: analytik A = mimo Q100, analytik B = částečně v Q100"
+    "Záplavy: analytik A uvádí mimo Q100, analytik B částečně v Q100 (stejná vrstva, neslučitelná tvrzení)."
   ],
   "chybejici_data": [
-    "jednoznačný zákres záplav",
-    "třída ochrany ZPF (BPEJ)",
-    "zátěže / pacht na LV 556"
+    "jednoznačný stav záplav",
+    "vlastnická struktura / zátěže LV"
   ],
   "_meta": {
-    "zdroj": "referencni",
-    "poskytovatel": null,
-    "model": "referenční výstup autora dle finálního promptu (bez běhu modelu)",
-    "pokusy": 0,
+    "zdroj": "live-agent-llm",
+    "poskytovatel": "cursor-agent",
+    "model": "composer-internal-llm",
+    "pokusy": 1,
     "prompt_sha": "a745b367dc2e0bf4",
+    "cas": "2026-10-30T21:53:17+00:00",
     "normalizace": [],
     "politika": [],
-    "poznamka": "Živé měření: python3 evaluate.py --eval-live --save-actual"
+    "poznamky_poskytovatele": [
+      "Interní LLM agenta (ne cloud API klíč). Stejný prompt+schema+policy jako evaluate.py."
+    ]
   }
 }
