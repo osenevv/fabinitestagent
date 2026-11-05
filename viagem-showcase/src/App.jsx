@@ -17,13 +17,6 @@ const AXIS_LABEL = {
   pravni_stav: "Právní stav",
 };
 
-const PROCESS_STEPS = [
-  "Načítám fixture vstup…",
-  "Simuluji výstup modelu…",
-  "Validuji schéma JSON…",
-  "Přepočítávám skóre a brány…",
-];
-
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -36,15 +29,13 @@ export default function App() {
     [cases, selectedId]
   );
 
-  const [phase, setPhase] = useState("idle"); // idle | running | done
-  const [stepIdx, setStepIdx] = useState(-1);
-  const [view, setView] = useState("guarded"); // guarded | raw
+  const [phase, setPhase] = useState("idle");
+  const [view, setView] = useState("guarded");
   const [output, setOutput] = useState(null);
   const [gateInfo, setGateInfo] = useState({ normalizace: [], politika: [] });
 
   useEffect(() => {
     setPhase("idle");
-    setStepIdx(-1);
     setOutput(null);
     setView("guarded");
     setGateInfo({ normalizace: [], politika: [] });
@@ -55,13 +46,8 @@ export default function App() {
     setPhase("running");
     setOutput(null);
     setView("guarded");
+    await sleep(900);
 
-    for (let i = 0; i < PROCESS_STEPS.length; i++) {
-      setStepIdx(i);
-      await sleep(380 + i * 90);
-    }
-
-    // Prefer fixture gate meta; if raw exists, also run live JS gates for the story.
     let meta = {
       normalizace: selected.gateMeta?.normalizace || [],
       politika: selected.gateMeta?.politika || [],
@@ -92,36 +78,13 @@ export default function App() {
   return (
     <div className="app">
       <header className="hero">
-        <div className="hero-top">
-          <span className="offline-badge">Offline showcase · bez API klíčů</span>
-        </div>
+        <span className="offline-badge">Offline · bez API</span>
         <h1 className="brand">Viagem</h1>
         <p className="hero-lead">AI konzultant výkup parcel</p>
-        <p className="hero-sub">
-          Interaktivní ukázka: klikněte na příklad, spusťte vyhodnocení a prohlédněte
-          doporučení, rizika i zásahy deterministických bran — vše z fixture dat, bez
-          živého LLM.
-        </p>
-        <div className="hero-cta">
-          <a className="btn btn-primary" href="#demo">
-            Otevřít příklady
-          </a>
-          <button
-            type="button"
-            className="btn btn-ghost"
-            onClick={() => {
-              document.getElementById("demo")?.scrollIntoView({ behavior: "smooth" });
-              setSelectedId(cases[0]?.id);
-            }}
-          >
-            Happy path Brno
-          </button>
-        </div>
       </header>
 
       <section className="demo" id="demo">
         <aside className="sidebar">
-          <p className="panel-label">Příklady</p>
           <div className="case-list">
             {cases.map((c) => (
               <button
@@ -135,8 +98,6 @@ export default function App() {
                   <span className={`chip ${c.category === "adversarial" ? "adv" : "suite"}`}>
                     {c.category === "adversarial" ? "adversarial" : "suite"}
                   </span>
-                  <span className="chip">{c.tag}</span>
-                  {c.hasGateRewrite ? <span className="chip">gate</span> : null}
                 </span>
               </button>
             ))}
@@ -147,19 +108,16 @@ export default function App() {
           {selected ? (
             <>
               <div className="stage-head">
-                <div>
-                  <h2>{selected.title}</h2>
-                  <p>{selected.blurb}</p>
-                </div>
+                <h2>{selected.title}</h2>
                 <div className="actions">
                   {canToggleRaw && phase === "done" ? (
-                    <div className="toggle" role="group" aria-label="Zobrazení výstupu">
+                    <div className="toggle" role="group" aria-label="Výstup">
                       <button
                         type="button"
                         className={view === "raw" ? "is-on" : ""}
                         onClick={() => setView("raw")}
                       >
-                        Surový model
+                        Surový
                       </button>
                       <button
                         type="button"
@@ -176,7 +134,7 @@ export default function App() {
                     onClick={runExample}
                     disabled={phase === "running"}
                   >
-                    {phase === "running" ? "Běží…" : phase === "done" ? "Spustit znovu" : "Spustit"}
+                    {phase === "running" ? "…" : "Spustit"}
                   </button>
                 </div>
               </div>
@@ -204,50 +162,12 @@ export default function App() {
                 </div>
               </div>
 
-              {selected.parcel?.highlights?.length ? (
-                <div className="highlights">
-                  {selected.parcel.highlights.map((h) => (
-                    <span key={h}>{h}</span>
-                  ))}
-                </div>
-              ) : null}
-
-              {phase === "idle" ? (
-                <div className="empty-state">
-                  Stiskněte <strong>Spustit</strong> — načte se offline fixture a
-                  (u rizikových případů) ukáže se zásah bran.
-                </div>
-              ) : null}
-
-              {phase === "running" ? (
-                <div className="processing">
-                  <p className="panel-label">Zpracování</p>
-                  <ul className="steps">
-                    {PROCESS_STEPS.map((s, i) => (
-                      <li
-                        key={s}
-                        className={
-                          i < stepIdx ? "done" : i === stepIdx ? "active" : ""
-                        }
-                      >
-                        {s}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
-
+              {phase === "running" ? <div className="processing-pulse" aria-hidden /> : null}
               {shown ? <ResultView data={shown} gateInfo={gateInfo} view={view} /> : null}
             </>
-          ) : (
-            <div className="empty-state">Vyberte příklad vlevo.</div>
-          )}
+          ) : null}
         </div>
       </section>
-
-      <p className="footer-note">
-        {catalog.note} · {cases.length} příkladů
-      </p>
     </div>
   );
 }
@@ -261,13 +181,13 @@ function ResultView({ data, gateInfo, view }) {
     <div className="result">
       <div className="result-top">
         <div className={`verdict ${rec}`}>
-          <div className="label">Doporučení{view === "raw" ? " (surový)" : ""}</div>
+          <div className="label">Doporučení{view === "raw" ? " · surový" : ""}</div>
           <div className="rec">{REC_LABEL[rec] || rec}</div>
           <p className="shrnuti">{data.shrnuti}</p>
         </div>
         <div className="scores">
           <div className="score-box">
-            <div className="l">Skóre zájmu</div>
+            <div className="l">Skóre</div>
             <div className="n">{data.skore_zajmu}</div>
           </div>
           <div className="score-box">
@@ -288,7 +208,7 @@ function ResultView({ data, gateInfo, view }) {
       </div>
 
       <div className="section">
-        <h3>Osy rizik</h3>
+        <h3>Rizika</h3>
         <div className="axes">
           {axes.map((key) => {
             const r = rizika[key] || {};
@@ -305,7 +225,6 @@ function ResultView({ data, gateInfo, view }) {
 
       {data.konflikty_dat?.length ? (
         <div className="conflicts">
-          <strong>Konflikty / injekce:</strong>
           <ul className="checklist">
             {data.konflikty_dat.map((c) => (
               <li key={c}>{c}</li>
@@ -314,32 +233,24 @@ function ResultView({ data, gateInfo, view }) {
         </div>
       ) : null}
 
-      <div className="section">
-        <h3>Checklist — ověřit ručně</h3>
-        <ul className="checklist">
-          {(data.overit_rucne || []).map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </div>
-
-      {(gateInfo.politika?.length || gateInfo.normalizace?.length) && view === "guarded" ? (
-        <div className="gate-box">
-          <h4>Zásah deterministických bran</h4>
-          <ul>
-            {[...(gateInfo.normalizace || []), ...(gateInfo.politika || [])].map((g) => (
-              <li key={g}>{g}</li>
+      {(data.overit_rucne || []).length ? (
+        <div className="section">
+          <h3>Checklist</h3>
+          <ul className="checklist">
+            {data.overit_rucne.map((item) => (
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
       ) : null}
 
-      {view === "raw" ? (
+      {(gateInfo.politika?.length || gateInfo.normalizace?.length) && view === "guarded" ? (
         <div className="gate-box">
-          <h4>Surový výstup (před branami)</h4>
+          <h4>_meta</h4>
           <ul>
-            <li>Toto je simulovaný / zachycený modelový verdikt bez enforce_gates.</li>
-            <li>Přepněte na „Po branách“ pro finální offline výsledek.</li>
+            {[...(gateInfo.normalizace || []), ...(gateInfo.politika || [])].map((g) => (
+              <li key={g}>{g}</li>
+            ))}
           </ul>
         </div>
       ) : null}
